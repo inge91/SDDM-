@@ -15,9 +15,11 @@ public class GaussianBlur : MonoBehaviour {
 	float normalization;
 	public Material mat;
 
+	private int index;
+	Matrix4x4 m;
 	void Start () {
-		Matrix4x4 m = new Matrix4x4 (); 
-		int index = (kernelSize - 1) / 2; 
+		m = new Matrix4x4 (); 
+		index = (kernelSize - 1) / 2; 
 		float total = 0;
 		float aTerm = 1 / (sigma * Mathf.Sqrt(Mathf.PI * 2));
 		for (int i = - index; i <= index; i ++) {
@@ -49,13 +51,14 @@ public class GaussianBlur : MonoBehaviour {
 		m.m23 = r [2, 3];
 		m.m33 = r [3, 3];
 
-		mat.SetInt ("_StartIndex", index);
-		mat.SetFloat ("_StepSize", stepSize);
-		mat.SetMatrix ("_GaussianKernel", m);
 	}
 	
 	void OnRenderImage (RenderTexture source, RenderTexture destination)
 	{
+		
+		mat.SetInt ("_StartIndex", index);
+		mat.SetFloat ("_StepSize", stepSize);
+		mat.SetMatrix ("_GaussianKernel", m);
 		Graphics.Blit (source, destination, mat);
 	}
 }

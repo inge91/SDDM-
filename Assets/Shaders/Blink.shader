@@ -1,4 +1,11 @@
-﻿Shader "Custom/BlinkR" {
+﻿/// <summary>
+/// Author: Inge Becht
+/// Vignette and blinking / restricted eye size effects
+/// StartOpenEyeAnimationSequence needs to be called when player wakes up.
+/// StartUnconsciousAnimationSequence needs to be called when player gets hit in the head.
+/// </summary>
+
+Shader "Custom/Blink" {
     Properties
      {
          _MainTex ("Texture", 2D) = "white" { }
@@ -17,6 +24,7 @@
              float _CurrentClosePercentage;
              float _FilterPercentage;
              sampler2D _MainTex;
+             int _IsLeft;
              struct vertexOutput
              {
                  float4  pos : SV_POSITION;
@@ -38,9 +46,19 @@
              	{
              		return float4(0.0f, 0.0f, 0.0f, 1.0f);
              	}
-   			  	
-   			  	float dist = 1 - sqrt(pow(vertexOut.uv.x,2) + pow(vertexOut.uv.y - 0.5,2));
-   			  	    				
+             
+             
+   			  	float dist = 0;
+   			  	if(_IsLeft == 1)
+   			  	{
+   			  		dist = 1 - sqrt(pow(vertexOut.uv.x - 1,2) + pow(vertexOut.uv.y - 0.5,2));
+   			  	}
+   			  	else
+   			  	{
+   			  		dist = 1 - sqrt(pow(vertexOut.uv.x,2) + pow(vertexOut.uv.y - 0.5,2));
+   			  	}
+   			  		
+             				
 				float4 filtered = tex2D(_MainTex, vertexOut.uv) * (1 - _FilterPercentage) 
              		   			  + float4(0.0f, 0.0f, 0.0f, 1.0f) * _FilterPercentage;
 				return filtered * dist;

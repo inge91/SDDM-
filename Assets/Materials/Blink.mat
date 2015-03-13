@@ -6,8 +6,8 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: BlinkR
-  m_Shader: {fileID: 4800000, guid: d0b828cb330205a4e915c4e878605d23, type: 3}
+  m_Name: Blink
+  m_Shader: {fileID: 4800000, guid: a601b2ca1a592774e9a3de5636a4fcc5, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_CustomRenderQueue: -1
@@ -133,7 +133,7 @@ Material:
       data:
         first:
           name: _VignettePercentage
-        second: .100000001
+        second: .300000012
     m_Colors:
       data:
         first:

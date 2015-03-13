@@ -45,7 +45,7 @@
              
              half4 frag (vertexOutput vertexOut) : COLOR
              {
-             	float4 total = float4(0.0,0,0,1.0);
+             	float4 total = float4(0.0, 0, 0,1.0);
              	for(int i = - _StartIndex; i <=_StartIndex; i ++)
              	{
              		total += _GaussianKernel[abs(i) / 4][abs(i) % 4] * tex2D(_MainTex, float2(vertexOut.uv.x + i * _StepSize, vertexOut.uv.y));
