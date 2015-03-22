@@ -11,64 +11,164 @@ public class BeltRumble : MonoBehaviour
 {
 
     bool Enabled = false; // is rumble enabled/disabled
-    GamePadState PreviousPlayerState;
+    bool Active = false;
+    bool IsConstant = true;
+    GamePadState PreviousFrontState;
     bool BeltConnected = false;
 
-    PlayerIndex FrontIndex = PlayerIndex.One;
-    PlayerIndex LeftIndex = PlayerIndex.Two;
-    PlayerIndex RightIndex = PlayerIndex.Four;
-    PlayerIndex BackIndex = PlayerIndex.Three;
+    // controller variables
+    const PlayerIndex FrontIndex = PlayerIndex.One;
+    const PlayerIndex LeftIndex  = PlayerIndex.Two;
+    const PlayerIndex RightIndex = PlayerIndex.Four;
+    const PlayerIndex BackIndex  = PlayerIndex.Three;
+    GamePadState FrontState;
+    GamePadState LeftState;
+    GamePadState RightState;
+    GamePadState BackState;
+
+    float LastActivationTime = 0;      // The time at of the last call to set rumble
+    float AlternationDuration = 0.1f;  // for how long rumble is triggered in alternating mode
+    float AlternationAmplitude = 0.8f; // how often rumble is triggered in alterating mode
+
 
 	void Start () 
     {
-        PreviousPlayerState = GamePad.GetState(PlayerIndex.One);
+        PreviousFrontState = GamePad.GetState(PlayerIndex.One);
 	}
 	
 
 	void Update () 
     {
-        RumbleTest();       
+        // Get the current gamepad states.
+        FrontState = GamePad.GetState(FrontIndex);
+        LeftState = GamePad.GetState(LeftIndex);
+        RightState = GamePad.GetState(RightIndex);
+        BackState = GamePad.GetState(BackIndex);
+
+        CheckGuideButton();//temporary method to enable disable rumble with the guide button
+        BeltConnected = FrontState.IsConnected && LeftState.IsConnected && RightState.IsConnected && BackState.IsConnected;
+
+        if (Enabled)
+        {
+            if (BeltConnected) // all 4 controller connected
+                ThumbStickRumble(IsConstant);
+            else if (FrontState.IsConnected) // only one connected
+                TriggerRumble(FrontIndex);
+        }
+        
+        PreviousFrontState = FrontState;
 	}
 
-    // a method to eperiment with rumble using the input of the first controller
-    void RumbleTest()
+#region experimental methods
+
+    //temporary method to enable disable rumble
+    void CheckGuideButton()
     {
-        // Get the current gamepad states.
-        GamePadState frontState = GamePad.GetState(FrontIndex);
-        GamePadState leftState = GamePad.GetState(LeftIndex);
-        GamePadState rightState = GamePad.GetState(RightIndex);
-        GamePadState backState = GamePad.GetState(BackIndex);
-        GamePadState playerState = frontState;
-
-        if (playerState.IsConnected)
+        if (FrontState.IsConnected)
         {
-            if (playerState.Buttons.Guide == ButtonState.Pressed && PreviousPlayerState.Buttons.Guide == ButtonState.Released)
+            if (FrontState.Buttons.Guide == ButtonState.Pressed && PreviousFrontState.Buttons.Guide == ButtonState.Released)
             {
-                Enabled = !Enabled;
-                Debug.Log("set rumble enabled to " + Enabled);
-            }
-            BeltConnected = frontState.IsConnected && leftState.IsConnected && rightState.IsConnected && backState.IsConnected;
-
-            if (Enabled)
-            {
-                if (BeltConnected) // control the belt witht he left thumbstick if it is connected
+                if (!Enabled)
                 {
-                    Vector2 direction = new Vector2(playerState.ThumbSticks.Left.X, playerState.ThumbSticks.Left.Y);
-                    SetBeltRumble(direction);
+                    Enabled = true;
+                    Debug.Log("Enabled rumble");
                 }
-                else // let the triggers control rumble if only one controller is connected
+                else if (IsConstant)
                 {
-                    GamePad.SetVibration(PlayerIndex.One, playerState.Triggers.Left, playerState.Triggers.Right);
+                    IsConstant = false;
+                    Debug.Log("Switch mode to alternating ");
+                }
+                else
+                {
+                    Enabled = false;
+                    Debug.Log("Disabled rumble");
                 }
             }
         }
-
-        PreviousPlayerState = playerState;
     }
 
-    // set rumble of 4 controllers making up the belt using a direction on a unit sphere
-    void SetBeltRumble(Vector2 direction)
+    // a method to eperiment with rumble using the input of the first controller
+    void ThumbStickRumble(bool constant)
+    {       
+            Vector2 direction = new Vector2(FrontState.ThumbSticks.Left.X, FrontState.ThumbSticks.Left.Y);
+            if (constant)
+                ConstantRumble(direction);
+            else
+                AlternatingRumble(direction);
+    }
+
+    // control rumble motors of the first controller with the triggers
+    void TriggerRumble(PlayerIndex playerIndex)
     {
+        GamePad.SetVibration(playerIndex, FrontState.Triggers.Left, FrontState.Triggers.Right);
+    }
+#endregion
+
+
+    // rumble is simply determined by the input
+    void ConstantRumble(Vector2 direction)
+    {
+        SetBeltRumble(direction);
+    }
+
+    // like ConstantRumble, but rumble turns on or off with a certain amplitude
+    void AlternatingRumble(Vector2 direction)
+    {
+        // switch whether rumble is active right now
+        if (Time.time - LastActivationTime > AlternationAmplitude)
+            Active = !Active;
+        // only rumble for a certain duration when active
+        if (Active && Time.time - LastActivationTime > AlternationDuration)
+            SetBeltRumble(direction);
+        else
+            StopAllVibrations();
+    }
+
+
+    #region coroutines to replace current methods?
+
+    // make a constant rumble for a certain duration
+    IEnumerator ConstantRumbleRoutine(Vector2 direction, float duration)
+    {
+        float startTime = Time.time;
+        SetBeltRumble(direction);
+        while (Time.time - startTime <= duration)
+        {
+            yield return null;
+        }
+        StopAllVibrations();
+    }
+
+
+    // method for alternating rumbling for a certain duration
+    IEnumerator AlternatingRumbleRoutine(Vector2 direction, float routineDuration, float rumbleDuration, float amplitude)
+    {
+        float startTime = Time.time;
+        float lastTime = Time.time;
+        while (Time.time - startTime <= routineDuration)
+        {
+            if (Time.time - lastTime >= amplitude)
+            {
+                Active = !Active;
+                if (Active)
+                    SetBeltRumble(direction);
+                else
+                    StopAllVibrations();
+
+                lastTime = Time.time;
+            }
+            yield return null;
+        }
+        StopAllVibrations();
+    }
+
+    #endregion
+
+
+    // set rumble of 4 controllers making up the belt using a direction on a unit sphere
+    private void SetBeltRumble(Vector2 direction)
+    {
+        LastActivationTime = Time.time;
         if(direction.magnitude > 1)
             direction.Normalize(); // vector on or within unit circle around center
       
@@ -108,10 +208,11 @@ public class BeltRumble : MonoBehaviour
     // disable virbation on all 4 controllers
     void StopAllVibrations()
     {
-        StopVibration(PlayerIndex.One);
-        StopVibration(PlayerIndex.Two);
-        StopVibration(PlayerIndex.Three);
-        StopVibration(PlayerIndex.Four);
+        Active = false;
+        StopVibration(FrontIndex);
+        StopVibration(LeftIndex);
+        StopVibration(RightIndex);
+        StopVibration(BackIndex);
     }
 
 }
