@@ -8,6 +8,8 @@ public class BulletSpawner : MonoBehaviour {
 	public GameObject objectToSpawn;
 	public GameObject targetObject;
 
+	public AudioClip bulletSound;
+
 	public float maxDistance;
 	public float minDistance;
 
@@ -62,6 +64,11 @@ public class BulletSpawner : MonoBehaviour {
 			Vector3 projectileStartPosition = new Vector3(x, y, z);
 			Vector3 direction = Vector3.Normalize(targetPosition - projectileStartPosition);
 			projectile.GetComponent<ProjectileBehaviour>().Init(projectileStartPosition, direction, maxSpeed, targetObject, csvWriter);
+			projectile.AddComponent<AudioSource>();
+			projectile.GetComponent<AudioSource>().clip = bulletSound;
+			projectile.GetComponent<AudioSource>().playOnAwake = true;
+			projectile.GetComponent<AudioSource>().loop = true;
+			projectile.AddComponent<OSPAudioSource>();
 
 		}
 	}
