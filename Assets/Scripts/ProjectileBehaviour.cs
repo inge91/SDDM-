@@ -13,6 +13,13 @@ public class ProjectileBehaviour : MonoBehaviour {
 	private float initialDistance;
 
 	private CsvWriter csvWriter;
+	private bool initialized;
+
+	void Start()
+	{
+		initialized = false;
+	}
+
 
 	public void Init(Vector3 startingPosition_, Vector3 headingDirection_, float speed_, GameObject target_, CsvWriter csvWriter_)
 	{
@@ -23,6 +30,7 @@ public class ProjectileBehaviour : MonoBehaviour {
 		this.transform.position = startingPosition;
 		initialDistance = Vector3.Distance (startingPosition, target.transform.position);
 		csvWriter = csvWriter_;
+		initialized = true;
 	}
 
 	// Update is called once per frame
@@ -34,12 +42,19 @@ public class ProjectileBehaviour : MonoBehaviour {
 		}
 	}
 
+	public void SetVisible(bool visible)
+	{
+		this.GetComponent<MeshRenderer> ().enabled = visible;	
+	}
+
 	void OnTriggerEnter (Collider c)
 	{		
-		if (c.gameObject.GetInstanceID () == target.GetInstanceID ()) {
-			csvWriter.writeLineToFile(initialDistance.ToString() + ", " + speed.ToString() + ", " + startingPosition + ", " + "0");
-			// Log succesful avoidance.
-			Destroy (this.gameObject);
+		if (initialized) {
+			if (c.gameObject.GetInstanceID () == target.GetInstanceID ()) {
+				csvWriter.writeLineToFile (initialDistance.ToString () + ", " + speed.ToString () + ", " + startingPosition + ", " + "0");
+				// Log succesful avoidance.
+				Destroy (this.gameObject);
+			}
 		}
 	}
 	
