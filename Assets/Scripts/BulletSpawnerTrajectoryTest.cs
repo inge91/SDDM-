@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using AssemblyCSharp;
 
 public class BulletSpawnerTrajectoryTest : MonoBehaviour
 {
@@ -19,7 +20,8 @@ public class BulletSpawnerTrajectoryTest : MonoBehaviour
 
 	public float maxAngle;
 	public float errorThreshold;
-
+	
+	public bool projectileIs3D;
 	
 	private float timeSinceLastProjectile;
 	private Vector3 targetPosition;
