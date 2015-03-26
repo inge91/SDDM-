@@ -5,18 +5,22 @@ public class CircleDraw : MonoBehaviour {
 
 
 	public float maxRadius = 5;
-	public bool scaleWithInput;
+	public bool scaleWithInput = false;
+
 	private float currentRadius;
+	private bool drawCircle;
 
 	// Use this for initialization
 	void Start () {
+		drawCircle = true;
 		currentRadius = maxRadius;
 		DrawCircle(currentRadius);
 	}
 	
+
 	void Update()
 	{
-		if (scaleWithInput) {
+		if (scaleWithInput && drawCircle) {
 
 			float input = Input.GetAxis ("Vertical");
 			if (input > 0)
@@ -58,5 +62,16 @@ public class CircleDraw : MonoBehaviour {
 	public float GetCurrentCircleRadius()
 	{
 		return currentRadius;
+	}
+
+	public void SetCurrentCircleRadius(float radius)
+	{
+		currentRadius = radius;
+	}
+	
+	public void DrawCircle(bool _drawCircle)
+	{
+		drawCircle = _drawCircle;
+		this.GetComponent<LineRenderer> ().enabled = drawCircle;
 	}
 }
