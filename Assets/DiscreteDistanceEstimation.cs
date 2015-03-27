@@ -15,7 +15,7 @@ public class DiscreteDistanceEstimation : MonoBehaviour {
 	int currentIndex;
 	// Use this for initialization
 	void Start () {
-		selectableCircles = new GameObject[3];
+		selectableCircles = new GameObject[radiiOfEstimationInterval.Length];
 		createCircleObject (maxRadius, 0.15f, "OuterRing", maxCircelMaterial, 0);
 		for(int i = 0; i < radiiOfEstimationInterval.Length; i++)
 		{

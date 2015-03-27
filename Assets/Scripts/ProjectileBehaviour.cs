@@ -37,7 +37,10 @@ public class ProjectileBehaviour : MonoBehaviour {
 	void Update () {
 		this.transform.position += headingDirection * speed * Time.deltaTime;
 		if (Vector3.Distance (startingPosition, this.transform.position) > initialDistance) {
-			csvWriter.writeLineToFile(initialDistance.ToString() + ", " + speed.ToString() + ", " + startingPosition + ", " + "1");
+			if(csvWriter != null)
+			{
+				csvWriter.writeLineToFile(initialDistance.ToString() + ", " + speed.ToString() + ", " + startingPosition + ", " + "1");
+			}
 			Destroy (this.gameObject);
 		}
 	}
