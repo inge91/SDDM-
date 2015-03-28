@@ -25,6 +25,10 @@ public class BulletSpawnerTrajectoryTest : MonoBehaviour
 	
 	private float timeSinceLastProjectile;
 	private Vector3 targetPosition;
+
+	private float lastDirection;
+	private bool willHit = false;
+	private bool hasClicked = false;
 	
 	private CsvWriter csvWriter;
 	
@@ -64,10 +68,13 @@ public class BulletSpawnerTrajectoryTest : MonoBehaviour
 				y = 0;
 				z = targetPosition.y + radius * Mathf.Sin(radians);
 			}
+			float deviation = Random.Range(0, 1);
 			Vector3 projectileStartPosition = new Vector3(x, y, z);
+			Vector3 direction = randomizedDirection(projectileStartPosition, targetPosition, deviation);
 
-			// Randomize direction.
-			Vector3 direction = randomizedDirection(projectileStartPosition, targetPosition, 1);
+			lastDirection = direction;
+			willHit = deviation < errorThreshold;
+			hasClicked = false;
 
 			projectile.GetComponent<ProjectileBehaviour>().Init(projectileStartPosition, direction, maxSpeed, targetObject, csvWriter);
 			projectile.AddComponent<AudioSource>();
@@ -75,6 +82,15 @@ public class BulletSpawnerTrajectoryTest : MonoBehaviour
 			projectile.GetComponent<AudioSource>().playOnAwake = true;
 			projectile.GetComponent<AudioSource>().loop = true;
 			projectile.AddComponent<OSPAudioSource>();
+		}
+
+		if (Input.GetMouseButtonDown(0) && (!hasClicked))
+		{
+			csvWriter.writeLineToFile((Time.time - timeSinceLastProjectile) + ", " + "???" + ", " + willHit + ", " + willHit + ", " + lastDirection);
+		}
+		if (Input.GetMouseButtonDown(1) && (!hasClicked))
+		{
+			csvWriter.writeLineToFile((Time.time - timeSinceLastProjectile) + ", " + "???" + ", " + willHit + ", " + !willHit + ", " + lastDirection);
 		}
 	}
 
