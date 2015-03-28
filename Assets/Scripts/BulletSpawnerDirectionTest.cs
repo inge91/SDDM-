@@ -7,7 +7,8 @@ using AssemblyCSharp;
 public class BulletSpawnerDirectionTest : MonoBehaviour
 {
 
-    // public variables set in unity scene inspector?
+    // public variables set in unity scene inspector
+    public bool writeOutput;
     public GameObject objectToSpawn;  //used to generate new objects making sounds
     public GameObject playerObject;
     public float radius;            // constant value of how far away objects are
@@ -25,10 +26,10 @@ public class BulletSpawnerDirectionTest : MonoBehaviour
 
     
 
-    // private variables in code?
+    // private variables in code
     private List<GameObject> balls;
     private Vector3 playerPosition;
-    private List<Vector3> guesses;
+    private List<GameObject> ballsGuessed;
     private CsvWriter csvWriter;
     private bool spawning = false;
 
@@ -36,18 +37,33 @@ public class BulletSpawnerDirectionTest : MonoBehaviour
     void Start()
     {
         playerPosition = playerObject.transform.position;
-        guesses = new List<Vector3>();
-        /*csvWriter = new CsvWriter("AudioDirectionEstimateTest.txt", "Object number, Actual angle, EstimateAngle, Error");*/
+        ballsGuessed = new List<GameObject>();
+        if (writeOutput)
+        {
+            csvWriter = new CsvWriter("AudioDirectionEstimateTest.txt", "Object number, Actual position, Estimated postion, Error angle");
+            csvWriter.writeLineToFile("-- " + "amount:" + amountOfSounds +" ,3D:" + directionIs3D + " ,only front:" + directionOnlyFront);
+        }
+
         balls = new List<GameObject>();
 
         StartCoroutine(spawnBallsAfterInterval());
     }
 
+
+    void Update()
+    {
+        if (Input.GetButtonDown("Fire1") && !spawning)
+        {
+            makeDirectionEstimate();
+        }       
+    }
+
+    // spawn a given number of balls
     IEnumerator spawnBallsAfterInterval()
     {
         spawning = true;
         int amount = amountOfSounds;
-        if(uniqueSounds)
+        if (uniqueSounds)
             amount = audioClips.Count < amount ? audioClips.Count : amount;
 
         yield return new WaitForSeconds(startDelay);
@@ -66,26 +82,56 @@ public class BulletSpawnerDirectionTest : MonoBehaviour
     }
 
 
-    void Update()
+    private void makeDirectionEstimate()
     {
-        
-        //press button after listening
-        if(Input.GetButtonDown("Fire1") && !spawning)
-		{
+        if (ballsGuessed.Count < balls.Count) // check if there are any balls left
+        {
             //get oculus look direction
             var centerEyeAnchor = playerObject.transform.GetChild(1);
             Vector3 lookForward = centerEyeAnchor.forward;
             if (!directionIs3D)
                 lookForward.y = 0;
-            float angleDegree = Vector3.Angle(Vector3.forward, lookForward);
 
-            // find closest ball & determine error
+            // loop to find the ball closest to the looking direction
+            GameObject closestBall = null;
+            float closestAngle = float.MaxValue;
+            for (int i = 0; i < balls.Count; i++)
+            {
+                GameObject currentBall = balls[i];
+                if (!ballsGuessed.Contains(currentBall))
+                {
+                    float angle = Vector3.Angle(lookForward, currentBall.transform.position);
+                    if (angle < closestAngle)
+                    {
+                        closestBall = currentBall;
+                        closestAngle = angle;
+                    }
+                }
+            }
+            // mark the closest ball as found
+            if (closestBall != null)
+            {
+                ballsGuessed.Add(closestBall);
+                //write error
+                if (writeOutput)
+                {
+                    Vector3 estimatedPosition = lookForward * radius;
+                    csvWriter.writeLineToFile(ballsGuessed.Count + ", " + closestBall.transform.position.ToString() + ", " + estimatedPosition.ToString() + ", " + closestAngle);
+                }
+                Debug.Log("Guess processed " + (balls.Count - ballsGuessed.Count) + " more to go");
+            }
+
+            if (ballsGuessed.Count == balls.Count && balls.Count > 0)
+            {
+                if (writeOutput)
+                    csvWriter.writeLineToFile("------------Done------------------");
+                Debug.Log("completed with guessing positions");
+            }
         }
-
     }
 
 
-
+    // spawn a static ball that emits sound
     private void spawnBall(int id)
     {
         GameObject ball = Instantiate(objectToSpawn);
