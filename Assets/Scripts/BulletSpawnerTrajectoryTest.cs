@@ -26,7 +26,7 @@ public class BulletSpawnerTrajectoryTest : MonoBehaviour
 	private float timeSinceLastProjectile;
 	private Vector3 targetPosition;
 
-	private float lastDirection;
+	private Vector3 lastDirection;
 	private bool willHit = false;
 	private bool hasClicked = false;
 	
