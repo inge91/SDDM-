@@ -9,19 +9,18 @@ public class BulletSpawnerTrajectoryTest : MonoBehaviour
 	
 	public AudioClip bulletSound;
 	
-	public float maxDistance;
-	public float minDistance;
+	public float distance;
 	
-	public float maxSpeed;
-	public float minSpeed;
+	public float speed;
 	
-	public float minIntervalBetweenProjectiles;
-	public float maxIntervalBetweenProjectiles;
+	public float intervalBetweenProjectiles;
 
 	public float maxAngle;
 	public float errorThreshold;
 	
 	public bool projectileIs3D;
+
+	private GameObject projectile;
 	
 	private float timeSinceLastProjectile;
 	private Vector3 targetPosition;
@@ -43,12 +42,17 @@ public class BulletSpawnerTrajectoryTest : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-		if(Time.time - timeSinceLastProjectile > maxIntervalBetweenProjectiles)
+		if(Time.time - timeSinceLastProjectile > intervalBetweenProjectiles)
 		{
+			if (!hasClicked)
+			{
+				csvWriter.writeLineToFile("-" + ", " + "???" + ", " + willHit + ", " + "no" + ", " + lastDirection);
+			}
 			timeSinceLastProjectile = Time.time;
-			GameObject projectile = Instantiate(objectToSpawn);
+			Destroy(projectile);
+			projectile = Instantiate(objectToSpawn);
 			
-			float radius = Random.Range(minDistance, maxDistance);
+			float radius = distance;
 			float x, y, z;
 			// start position should be on a circle around the user.  
 			
@@ -76,7 +80,7 @@ public class BulletSpawnerTrajectoryTest : MonoBehaviour
 			willHit = deviation < errorThreshold;
 			hasClicked = false;
 
-			projectile.GetComponent<ProjectileBehaviour>().Init(projectileStartPosition, direction, maxSpeed, targetObject, csvWriter);
+			projectile.GetComponent<ProjectileBehaviour>().Init(projectileStartPosition, direction, speed, targetObject, csvWriter);
 			projectile.AddComponent<AudioSource>();
 			projectile.GetComponent<AudioSource>().clip = bulletSound;
 			projectile.GetComponent<AudioSource>().playOnAwake = true;
@@ -86,11 +90,15 @@ public class BulletSpawnerTrajectoryTest : MonoBehaviour
 
 		if (Input.GetMouseButtonDown(0) && (!hasClicked))
 		{
-			csvWriter.writeLineToFile((Time.time - timeSinceLastProjectile) + ", " + "???" + ", " + willHit + ", " + willHit + ", " + lastDirection);
+			csvWriter.writeLineToFile((Time.time - timeSinceLastProjectile) + ", " + "???" + ", " + willHit + ", " + (willHit ? "yes" : "no") + ", " + lastDirection);
+			hasClicked = true;
+			Debug.Log("RMB");
 		}
 		if (Input.GetMouseButtonDown(1) && (!hasClicked))
 		{
-			csvWriter.writeLineToFile((Time.time - timeSinceLastProjectile) + ", " + "???" + ", " + willHit + ", " + !willHit + ", " + lastDirection);
+			csvWriter.writeLineToFile((Time.time - timeSinceLastProjectile) + ", " + "???" + ", " + willHit + ", " + (!willHit ? "yes" : "no") + ", " + lastDirection);
+			hasClicked = true;
+			Debug.Log("LMB");
 		}
 	}
 
