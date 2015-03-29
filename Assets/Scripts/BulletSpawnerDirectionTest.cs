@@ -8,6 +8,7 @@ public class BulletSpawnerDirectionTest : MonoBehaviour
 {
 
     // public variables set in unity scene inspector
+    public bool isExample;
     public bool writeOutput;
     public GameObject objectToSpawn;  //used to generate new objects making sounds
     public GameObject playerObject;
@@ -23,7 +24,7 @@ public class BulletSpawnerDirectionTest : MonoBehaviour
     public float audioSpawnDelay;  //delay inbetween spawns
     public List<AudioClip> audioClips;
 
-
+    public GameObject gui;
     
 
     // private variables in code
@@ -38,10 +39,10 @@ public class BulletSpawnerDirectionTest : MonoBehaviour
     {
         playerPosition = playerObject.transform.position;
         ballsGuessed = new List<GameObject>();
-        if (writeOutput)
+        if (writeOutput & !isExample)
         {
-            csvWriter = new CsvWriter("AudioDirectionEstimateTest.txt", "Object number, Actual position, Estimated postion, Error angle");
-            csvWriter.writeLineToFile("-- " + "amount:" + amountOfSounds +" ,3D:" + directionIs3D + " ,only front:" + directionOnlyFront);
+            csvWriter = new CsvWriter("Audio"+ amountOfSounds +"DirectionEstimateTest.txt", "Object number, Actual position, Estimated postion, Error angle");
+            csvWriter.writeLineToFile("-- " + "amount:" + amountOfSounds +" ,3D:" + directionIs3D + " ,only front:" + directionOnlyFront +" ,unique sounds:"+uniqueSounds);
         }
 
         balls = new List<GameObject>();
@@ -113,7 +114,7 @@ public class BulletSpawnerDirectionTest : MonoBehaviour
             {
                 ballsGuessed.Add(closestBall);
                 //write error
-                if (writeOutput)
+                if (writeOutput & !isExample)
                 {
                     Vector3 estimatedPosition = lookForward * radius;
                     csvWriter.writeLineToFile(ballsGuessed.Count + ", " + closestBall.transform.position.ToString() + ", " + estimatedPosition.ToString() + ", " + closestAngle);
@@ -126,10 +127,26 @@ public class BulletSpawnerDirectionTest : MonoBehaviour
                 if (writeOutput)
                     csvWriter.writeLineToFile("------------Done------------------");
                 Debug.Log("completed with guessing positions");
+                
+                DestroyBalls();
+                // go back to gui
+                gui.SetActive(true);
             }
         }
     }
 
+
+    // remove all sound sources
+    void DestroyBalls()
+    {
+        ballsGuessed.Clear();
+        foreach (GameObject ball in balls)
+        {
+            ball.GetComponent<AudioSource>().Stop();
+            Destroy(ball);
+        }
+        balls.Clear();
+    }
 
     // spawn a static ball that emits sound
     private void spawnBall(int id)
