@@ -10,6 +10,7 @@ public class BulletSpawnerDirectionTest : MonoBehaviour
     // public variables set in unity scene inspector
     public bool isExample;
     public bool writeOutput;
+    public int iterations;           // how many times a new set of directions will be generated
     public GameObject objectToSpawn;  //used to generate new objects making sounds
     public GameObject playerObject;
     public float radius;            // constant value of how far away objects are
@@ -22,8 +23,8 @@ public class BulletSpawnerDirectionTest : MonoBehaviour
     public int amountOfSounds;      //amount of sound emitting objects spawned
     public bool uniqueSounds;       // do they play unique sounds
     public float audioSpawnDelay;  //delay inbetween spawns
+    public AudioClip selectSound;
     public List<AudioClip> audioClips;
-
     public GameObject gui;
     
 
@@ -33,6 +34,7 @@ public class BulletSpawnerDirectionTest : MonoBehaviour
     private List<GameObject> ballsGuessed;
     private CsvWriter csvWriter;
     private bool spawning = false;
+    private int currentIteration = 0;
 
 
     void Start()
@@ -47,33 +49,43 @@ public class BulletSpawnerDirectionTest : MonoBehaviour
             csvWriter.writeLineToFile("-- " + "amount:" + amountOfSounds +" ,3D:" + directionIs3D + " ,only front:" + directionOnlyFront +" ,unique sounds:"+uniqueSounds);
         }
 
-        StartCoroutine(spawnBallsAfterInterval());
+        if(currentIteration < iterations)
+            StartCoroutine(spawnBallsAfterInterval());
     }
 
     void Update()
     {
-        if (Input.GetButtonDown("Fire1") && !spawning)
+        // confirm direction with left mouse or A on controller
+        if (Input.GetButtonDown("Fire1") && !spawning) 
         {
             Vector3 lookDirection = getLookDirection();
             markEstimatedBall(lookDirection);
         }
         // all guesses have been made
-        if (ballsGuessed.Count == balls.Count && balls.Count > 0)
+        if (!spawning && ballsGuessed.Count == balls.Count && balls.Count > 0)
         {
             if (writeOutput)
-                csvWriter.writeLineToFile("------------Done------------------");
-            Debug.Log("completed with guessing positions");
+                csvWriter.writeLineToFile("--------iteration Done------------------");
+            Debug.Log("completed with iteration");
 
             DestroyBalls();
 
-            // go back to gui
-            gui.SetActive(true);
+            //either spawn a new set, or go back to gui
+            if (currentIteration < iterations)
+                StartCoroutine(spawnBallsAfterInterval());
+            else
+            {
+                if (writeOutput)
+                    csvWriter.writeLineToFile("--------Experiment Done------------------");
+                StartCoroutine(enableGui());
+            }
         }
     }
 
     // spawn a given number of balls
     IEnumerator spawnBallsAfterInterval()
     {
+        currentIteration++;
         spawning = true;
         int amount = amountOfSounds;
         if (uniqueSounds) // if unique sounds are required, you can't spawn more than there are sounds
@@ -157,6 +169,7 @@ public class BulletSpawnerDirectionTest : MonoBehaviour
             if (closestBall != null)
             {
                 ballsGuessed.Add(closestBall);
+                AudioSource.PlayClipAtPoint(selectSound, playerObject.transform.position);
                 //write error
                 if (writeOutput)
                 {
@@ -169,19 +182,23 @@ public class BulletSpawnerDirectionTest : MonoBehaviour
     }
 
 
+
+    IEnumerator enableGui()
+    {
+        yield return new WaitForSeconds(1);
+        gui.SetActive(true);
+        yield return null;
+    }
+
     // remove all sound sources
     void DestroyBalls()
     {
         ballsGuessed.Clear();
         foreach (GameObject ball in balls)
-        {
-            ball.GetComponent<AudioSource>().Stop();
             Destroy(ball);
-        }
         balls.Clear();
     }
 
-    
     //generate a random position around the player on either a 2d circle or 3d sphere
     private Vector3 randomPosition()
     {
