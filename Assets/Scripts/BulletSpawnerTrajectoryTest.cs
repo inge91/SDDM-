@@ -27,7 +27,7 @@ public class BulletSpawnerTrajectoryTest : MonoBehaviour
 
 	private Vector3 lastDirection;
 	private bool willHit = false;
-	private bool hasClicked = false;
+	private bool hasClicked = true;
 	
 	private CsvWriter csvWriter;
 	
@@ -46,7 +46,7 @@ public class BulletSpawnerTrajectoryTest : MonoBehaviour
 		{
 			if (!hasClicked)
 			{
-				csvWriter.writeLineToFile("-" + ", " + "???" + ", " + willHit + ", " + "no" + ", " + lastDirection);
+				csvWriter.writeLineToFile("-" + ", " + "???" + ", " + (willHit ? "yes" : "no") + ", " + "no" + ", " + lastDirection);
 			}
 			timeSinceLastProjectile = Time.time;
 			Destroy(projectile);
@@ -72,7 +72,7 @@ public class BulletSpawnerTrajectoryTest : MonoBehaviour
 				y = 0;
 				z = targetPosition.y + radius * Mathf.Sin(radians);
 			}
-			float deviation = Random.Range(0, 1);
+			float deviation = Random.Range(0f, 1f);
 			Vector3 projectileStartPosition = new Vector3(x, y, z);
 			Vector3 direction = randomizedDirection(projectileStartPosition, targetPosition, deviation);
 
@@ -90,24 +90,24 @@ public class BulletSpawnerTrajectoryTest : MonoBehaviour
 
 		if (Input.GetMouseButtonDown(0) && (!hasClicked))
 		{
-			csvWriter.writeLineToFile((Time.time - timeSinceLastProjectile) + ", " + "???" + ", " + willHit + ", " + (willHit ? "yes" : "no") + ", " + lastDirection);
-			hasClicked = true;
-			Debug.Log("RMB");
-		}
-		if (Input.GetMouseButtonDown(1) && (!hasClicked))
-		{
-			csvWriter.writeLineToFile((Time.time - timeSinceLastProjectile) + ", " + "???" + ", " + willHit + ", " + (!willHit ? "yes" : "no") + ", " + lastDirection);
+			csvWriter.writeLineToFile((Time.time - timeSinceLastProjectile) + ", " + "???" + ", " + (willHit ? "yes" : "no") + ", " + (willHit ? "yes" : "no") + ", " + lastDirection);
 			hasClicked = true;
 			Debug.Log("LMB");
 		}
+		if (Input.GetMouseButtonDown(1) && (!hasClicked))
+		{
+			csvWriter.writeLineToFile((Time.time - timeSinceLastProjectile) + ", " + "???" + ", " + (willHit ? "yes" : "no") + ", " + (!willHit ? "yes" : "no") + ", " + lastDirection);
+			hasClicked = true;
+			Debug.Log("RMB");
+		}
 	}
 
-	Vector3 randomizedDirection(Vector3 startPosition, Vector3 targetPosition, float amount)
+	Vector3 randomizedDirection(Vector3 startPosition, Vector3 targetPosition, float deviation)
 	{
 		Vector3 forward = targetPosition - startPosition;
 		float dist = forward.magnitude;
 
-		float radius = Mathf.Tan(Mathf.Deg2Rad * maxAngle * amount) * dist;
+		float radius = Mathf.Tan(Mathf.Deg2Rad * maxAngle * deviation) * dist;
 		Vector2 circle = Random.insideUnitCircle * radius;
 		Vector3 target = startPosition + forward + Quaternion.Euler(forward) * new Vector3(circle.x, circle.y);
 		return Vector3.Normalize(target);
