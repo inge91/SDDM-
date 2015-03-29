@@ -53,8 +53,7 @@ public class BulletSpawnerTrajectoryTest : MonoBehaviour
 			projectile = Instantiate(objectToSpawn);
 			
 			float radius = distance;
-			float x, y, z;
-			// start position should be on a circle around the user.  
+			float x, y, z; 
 			
 			if (projectileIs3D)
 			{
@@ -92,24 +91,38 @@ public class BulletSpawnerTrajectoryTest : MonoBehaviour
 		{
 			csvWriter.writeLineToFile((Time.time - timeSinceLastProjectile) + ", " + "???" + ", " + (willHit ? "yes" : "no") + ", " + (willHit ? "yes" : "no") + ", " + lastDirection);
 			hasClicked = true;
-			Debug.Log("LMB");
 		}
 		if (Input.GetMouseButtonDown(1) && (!hasClicked))
 		{
 			csvWriter.writeLineToFile((Time.time - timeSinceLastProjectile) + ", " + "???" + ", " + (willHit ? "yes" : "no") + ", " + (!willHit ? "yes" : "no") + ", " + lastDirection);
 			hasClicked = true;
-			Debug.Log("RMB");
 		}
 	}
 
 	Vector3 randomizedDirection(Vector3 startPosition, Vector3 targetPosition, float deviation)
 	{
-		Vector3 forward = targetPosition - startPosition;
-		float dist = forward.magnitude;
+		Debug.Log(deviation * maxAngle);
 
-		float radius = Mathf.Tan(Mathf.Deg2Rad * maxAngle * deviation) * dist;
-		Vector2 circle = Random.insideUnitCircle * radius;
-		Vector3 target = startPosition + forward + Quaternion.Euler(forward) * new Vector3(circle.x, circle.y);
-		return Vector3.Normalize(target);
+		Vector3 forward = targetPosition - startPosition;
+		Vector3 tangent = Vector3.one;
+		Vector3.OrthoNormalize (ref forward, ref tangent);
+
+		float rotation = Random.Range (0, 360);
+		Quaternion q = Quaternion.AngleAxis(rotation, forward);
+		tangent = q * tangent;
+
+		Vector3 binormal = Vector3.Normalize (Vector3.Cross(forward, tangent));
+
+		float s = Random.Range (0f, 1f);
+		float r = Random.Range (0f, 1f);
+		float h = Mathf.Cos (Mathf.Deg2Rad * deviation * maxAngle);
+
+		float phi = 2 * Mathf.PI * s;
+		float z = h + (1 - h) * r;
+		float sinT = Mathf.Sqrt (1 - z * z);
+		float x = Mathf.Cos (phi) * sinT;
+		float y = Mathf.Sin (phi) * sinT;
+
+		return tangent * x + binormal * y + forward * z;
 	}
 }
