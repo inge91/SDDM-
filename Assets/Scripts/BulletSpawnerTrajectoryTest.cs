@@ -16,7 +16,7 @@ public class BulletSpawnerTrajectoryTest : MonoBehaviour
 	public float intervalBetweenProjectiles;
 
 	public float maxAngle;
-	public float errorThreshold;
+	public float hitRange;
 	
 	public bool projectileIs3D;
 
@@ -26,10 +26,13 @@ public class BulletSpawnerTrajectoryTest : MonoBehaviour
 	private Vector3 targetPosition;
 
 	private Vector3 lastDirection;
-	private bool willHit = false;
-	private bool hasClicked = true;
+	private bool hasClicked = false;
 	
 	private CsvWriter csvWriter;
+	private float reactionTime;
+	private float closestDistance;
+	private bool guess;
+	private float direction;
 	
 	// Use this for initialization
 	void Start ()
@@ -44,14 +47,19 @@ public class BulletSpawnerTrajectoryTest : MonoBehaviour
 	{
 		if(Time.time - timeSinceLastProjectile > intervalBetweenProjectiles)
 		{
-			if (!hasClicked)
-			{
-				csvWriter.writeLineToFile("-" + ", " + "???" + ", " + (willHit ? "yes" : "no") + ", " + "no" + ", " + lastDirection);
-			}
+			// Log experiment data.
+			bool hit = closestDistance < hitRange;
+			bool correct = hasClicked && (hit == guess);
+			string s = (hasClicked ? reactionTime.ToString() : "-") + ", " + closestDistance + ", " + (hit ? "yes" : "no") + ", " + (correct ? "yes" : "no") + ", " + lastDirection;
+			csvWriter.writeLineToFile(s);
+			Debug.Log(s);
+
+			// Create new bullet.
 			timeSinceLastProjectile = Time.time;
 			Destroy(projectile);
 			projectile = Instantiate(objectToSpawn);
-			
+
+			// Calculate bullet position and direction.
 			float radius = distance;
 			float x, y, z; 
 			
@@ -76,8 +84,8 @@ public class BulletSpawnerTrajectoryTest : MonoBehaviour
 			Vector3 direction = randomizedDirection(projectileStartPosition, targetPosition, deviation);
 
 			lastDirection = direction;
-			willHit = deviation < errorThreshold;
 			hasClicked = false;
+			closestDistance = float.MaxValue;
 
 			projectile.GetComponent<ProjectileBehaviour>().Init(projectileStartPosition, direction, speed, targetObject, csvWriter);
 			projectile.AddComponent<AudioSource>();
@@ -87,22 +95,27 @@ public class BulletSpawnerTrajectoryTest : MonoBehaviour
 			projectile.AddComponent<OSPAudioSource>();
 		}
 
+		if (projectile != null) {
+			Vector3 toProjectile = projectile.transform.position - targetPosition;
+			closestDistance = Mathf.Min (closestDistance, toProjectile.magnitude);
+		}
+
 		if (Input.GetMouseButtonDown(0) && (!hasClicked))
 		{
-			csvWriter.writeLineToFile((Time.time - timeSinceLastProjectile) + ", " + "???" + ", " + (willHit ? "yes" : "no") + ", " + (willHit ? "yes" : "no") + ", " + lastDirection);
+			reactionTime = Time.time - timeSinceLastProjectile;
+			guess = true;
 			hasClicked = true;
 		}
 		if (Input.GetMouseButtonDown(1) && (!hasClicked))
 		{
-			csvWriter.writeLineToFile((Time.time - timeSinceLastProjectile) + ", " + "???" + ", " + (willHit ? "yes" : "no") + ", " + (!willHit ? "yes" : "no") + ", " + lastDirection);
+			reactionTime = Time.time - timeSinceLastProjectile;
+			guess = false;
 			hasClicked = true;
 		}
 	}
 
 	Vector3 randomizedDirection(Vector3 startPosition, Vector3 targetPosition, float deviation)
 	{
-		Debug.Log(deviation * maxAngle);
-
 		Vector3 forward = targetPosition - startPosition;
 		Vector3 tangent = Vector3.one;
 		Vector3.OrthoNormalize (ref forward, ref tangent);
