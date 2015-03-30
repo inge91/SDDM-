@@ -20,6 +20,10 @@ public class BulletSpawnerTrajectoryTest : MonoBehaviour
 
 	public int testCount;
 
+	public int randomSeed;
+
+	public bool isTutorial;
+
 	private GameObject projectile;
 	
 	private float timeSinceLastProjectile;
@@ -42,12 +46,14 @@ public class BulletSpawnerTrajectoryTest : MonoBehaviour
 		timeSinceLastProjectile = Time.time;
 		targetPosition = targetObject.transform.position;
 		csvWriter = new CsvWriter("TrajectoryTest.txt", "reactionTime;closestDist;hit;correct;direction");
-		Random.seed = 42;
+		Random.seed = randomSeed;
 	}
 	
 	// Update is called once per frame
 	void Update ()
 	{
+		if (!gameObject.activeSelf)
+			return;
 		if(Time.time - timeSinceLastProjectile > intervalBetweenProjectiles)
 		{
 			// Log experiment data.
@@ -73,7 +79,6 @@ public class BulletSpawnerTrajectoryTest : MonoBehaviour
 			timeSinceLastProjectile = Time.time;
 			Destroy(projectile);
 			projectile = Instantiate(objectToSpawn);
-			Debug.Log("BULLET");
 
 			// Calculate bullet position and direction.
 			float radius = distance;
