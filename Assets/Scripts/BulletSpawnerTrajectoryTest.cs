@@ -45,7 +45,7 @@ public class BulletSpawnerTrajectoryTest : MonoBehaviour
 	{
 		timeSinceLastProjectile = Time.time;
 		targetPosition = targetObject.transform.position;
-		csvWriter = new CsvWriter("TrajectoryTest.txt", "reactionTime;closestDist;hit;correct;direction");
+		csvWriter = new CsvWriter("TrajectoryTest", "reactionTime;closestDist;hit;correct;direction");
 		Random.seed = randomSeed;
 	}
 	
@@ -61,7 +61,7 @@ public class BulletSpawnerTrajectoryTest : MonoBehaviour
 			{
 				bool hit = closestDistance < hitRange;
 				bool correct = hasClicked && (hit == guess);
-				string s = (hasClicked ? reactionTime.ToString() : "-") + ";" + closestDistance + ";" + (hit ? "yes" : "no") + ";" + (correct ? "yes" : "no") + ";" + lastDirection;
+				string s = (hasClicked ? reactionTime.ToString() : "") + ";" + closestDistance + ";" + (hit ? "1" : "0") + ";" + (correct ? "1" : "0") + ";" + lastDirection;
 				csvWriter.writeLineToFile(s);
 				Debug.Log(s);
 			}
@@ -120,13 +120,15 @@ public class BulletSpawnerTrajectoryTest : MonoBehaviour
 			closestDistance = Mathf.Min (closestDistance, toProjectile.magnitude);
 		}
 
-		if ((Input.GetMouseButtonDown(0) || Input.GetButtonDown("Fire1")) && (!hasClicked))
+		bool controller = Input.GetJoystickNames ().Length > 0;
+
+		if (((!controller && Input.GetMouseButtonDown(0)) || (controller && Input.GetButtonDown("JoystickButton0"))) && (!hasClicked))
 		{
 			reactionTime = Time.time - timeSinceLastProjectile;
 			guess = true;
 			hasClicked = true;
 		}
-		if ((Input.GetMouseButtonDown(1) || Input.GetButtonDown("Fire2")) && (!hasClicked))
+		if (((!controller && Input.GetMouseButtonDown(1)) || (controller && Input.GetButtonDown("JoystickButton1"))) && (!hasClicked))
 		{
 			reactionTime = Time.time - timeSinceLastProjectile;
 			guess = false;
