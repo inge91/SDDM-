@@ -10,15 +10,15 @@ public class BulletSpawnerTrajectoryTest : MonoBehaviour
 	public AudioClip bulletSound;
 	
 	public float distance;
-	
 	public float speed;
-	
 	public float intervalBetweenProjectiles;
+	public float[] possibleAngles;
 
-	public float maxAngle;
 	public float hitRange;
 	
 	public bool projectileIs3D;
+
+	public int testCount;
 
 	private GameObject projectile;
 	
@@ -27,6 +27,8 @@ public class BulletSpawnerTrajectoryTest : MonoBehaviour
 
 	private Vector3 lastDirection;
 	private bool hasClicked = false;
+
+	private int currentTest = 0;
 	
 	private CsvWriter csvWriter;
 	private float reactionTime;
@@ -39,7 +41,8 @@ public class BulletSpawnerTrajectoryTest : MonoBehaviour
 	{
 		timeSinceLastProjectile = Time.time;
 		targetPosition = targetObject.transform.position;
-		csvWriter = new CsvWriter("TrajectoryTest.txt", "reactionTime, closestDist, hit, correct, direction");
+		csvWriter = new CsvWriter("TrajectoryTest.txt", "reactionTime;closestDist;hit;correct;direction");
+		Random.seed = 42;
 	}
 	
 	// Update is called once per frame
@@ -48,16 +51,29 @@ public class BulletSpawnerTrajectoryTest : MonoBehaviour
 		if(Time.time - timeSinceLastProjectile > intervalBetweenProjectiles)
 		{
 			// Log experiment data.
-			bool hit = closestDistance < hitRange;
-			bool correct = hasClicked && (hit == guess);
-			string s = (hasClicked ? reactionTime.ToString() : "-") + ", " + closestDistance + ", " + (hit ? "yes" : "no") + ", " + (correct ? "yes" : "no") + ", " + lastDirection;
-			csvWriter.writeLineToFile(s);
-			Debug.Log(s);
+			if (currentTest > 0)
+			{
+				bool hit = closestDistance < hitRange;
+				bool correct = hasClicked && (hit == guess);
+				string s = (hasClicked ? reactionTime.ToString() : "-") + ";" + closestDistance + ";" + (hit ? "yes" : "no") + ";" + (correct ? "yes" : "no") + ";" + lastDirection;
+				csvWriter.writeLineToFile(s);
+				Debug.Log(s);
+			}
+			
+			// Deactivate when tests are completed.
+			currentTest++;
+			if (currentTest > testCount)
+			{
+				gameObject.SetActive(false);
+				Debug.Log("STOP");
+				return;
+			}
 
 			// Create new bullet.
 			timeSinceLastProjectile = Time.time;
 			Destroy(projectile);
 			projectile = Instantiate(objectToSpawn);
+			Debug.Log("BULLET");
 
 			// Calculate bullet position and direction.
 			float radius = distance;
@@ -79,9 +95,8 @@ public class BulletSpawnerTrajectoryTest : MonoBehaviour
 				y = 0;
 				z = targetPosition.y + radius * Mathf.Sin(radians);
 			}
-			float deviation = Random.Range(0f, 1f);
 			Vector3 projectileStartPosition = new Vector3(x, y, z);
-			Vector3 direction = randomizedDirection(projectileStartPosition, targetPosition, deviation);
+			Vector3 direction = randomizedDirection(projectileStartPosition, targetPosition);
 
 			lastDirection = direction;
 			hasClicked = false;
@@ -100,13 +115,13 @@ public class BulletSpawnerTrajectoryTest : MonoBehaviour
 			closestDistance = Mathf.Min (closestDistance, toProjectile.magnitude);
 		}
 
-		if (Input.GetMouseButtonDown(0) && (!hasClicked))
+		if ((Input.GetMouseButtonDown(0) || Input.GetButtonDown("Fire1")) && (!hasClicked))
 		{
 			reactionTime = Time.time - timeSinceLastProjectile;
 			guess = true;
 			hasClicked = true;
 		}
-		if (Input.GetMouseButtonDown(1) && (!hasClicked))
+		if ((Input.GetMouseButtonDown(1) || Input.GetButtonDown("Fire2")) && (!hasClicked))
 		{
 			reactionTime = Time.time - timeSinceLastProjectile;
 			guess = false;
@@ -114,28 +129,19 @@ public class BulletSpawnerTrajectoryTest : MonoBehaviour
 		}
 	}
 
-	Vector3 randomizedDirection(Vector3 startPosition, Vector3 targetPosition, float deviation)
+	Vector3 randomizedDirection(Vector3 startPosition, Vector3 targetPosition)
 	{
+		float angle = possibleAngles[Random.Range(0, possibleAngles.Length)];
+		float rotation = Random.Range (0, 30) * 12;
+
 		Vector3 forward = targetPosition - startPosition;
 		Vector3 tangent = Vector3.one;
 		Vector3.OrthoNormalize (ref forward, ref tangent);
 
-		float rotation = Random.Range (0, 360);
-		Quaternion q = Quaternion.AngleAxis(rotation, forward);
-		tangent = q * tangent;
+		Quaternion q1 = Quaternion.AngleAxis (rotation, forward);
+		tangent = q1 * tangent;
 
-		Vector3 binormal = Vector3.Normalize (Vector3.Cross(forward, tangent));
-
-		float s = Random.Range (0f, 1f);
-		float r = Random.Range (0f, 1f);
-		float h = Mathf.Cos (Mathf.Deg2Rad * deviation * maxAngle);
-
-		float phi = 2 * Mathf.PI * s;
-		float z = h + (1 - h) * r;
-		float sinT = Mathf.Sqrt (1 - z * z);
-		float x = Mathf.Cos (phi) * sinT;
-		float y = Mathf.Sin (phi) * sinT;
-
-		return tangent * x + binormal * y + forward * z;
+		Quaternion q2 = Quaternion.AngleAxis (angle, tangent);
+		return q2 * forward;
 	}
 }
