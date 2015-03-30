@@ -150,8 +150,8 @@ public class BulletSpawnerDirectionTest : MonoBehaviour
     {
         //get oculus look direction
         var centerEyeAnchor = playerObject.transform.GetChild(1);
-        //Vector3 lookForward = centerEyeAnchor.forward;
-        Vector3 lookForward = Camera.main.transform.forward;
+        Vector3 lookForward = centerEyeAnchor.forward;
+        //Vector3 lookForward = Camera.main.transform.forward;
         if (!directionIs3D)
             lookForward.y = 0;
 
