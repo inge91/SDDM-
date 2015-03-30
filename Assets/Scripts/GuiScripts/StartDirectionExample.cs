@@ -13,6 +13,9 @@ public class StartDirectionExample : MonoBehaviour {
     public GameObject panelExampleMulti;
     public GameObject panelTestMulti;
 
+    public GameObject nextButton; // button from direction example to direction test
+    public GameObject nextButton2; //button from direction test to multi direction example
+
     public GameObject canvas;
 
 	public void StartExample()
@@ -20,7 +23,9 @@ public class StartDirectionExample : MonoBehaviour {
 		exampleSpawner.SetActive (true);
 		panelExample.SetActive (false);
         panelTest.SetActive (true);
+        EventSystem.current.SetSelectedGameObject(nextButton);
         canvas.SetActive (false);
+
 	}
 
     public void StartExampleMulti()
@@ -29,6 +34,7 @@ public class StartDirectionExample : MonoBehaviour {
         multiExampleSpawner.SetActive (true);
         panelExampleMulti.SetActive (false);
         panelTestMulti.SetActive (true);
+        EventSystem.current.SetSelectedGameObject(nextButton2);
         canvas.SetActive (false);
     }
 }

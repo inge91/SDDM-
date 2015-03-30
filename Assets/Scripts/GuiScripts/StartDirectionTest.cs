@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 using System.Collections;
 
 public class StartDirectionTest: MonoBehaviour {
@@ -13,7 +14,7 @@ public class StartDirectionTest: MonoBehaviour {
     public GameObject panelTestMulti;
 
 	public GameObject canvas;
-
+    public GameObject nextButton;
 
 	public void StartTest()
 	{
@@ -21,6 +22,7 @@ public class StartDirectionTest: MonoBehaviour {
 		spawner.SetActive (true);
         panelTest.SetActive (false);
         panelExampleMulti.SetActive(true);
+        EventSystem.current.SetSelectedGameObject(nextButton);
 		canvas.SetActive (false);
 	}
 
