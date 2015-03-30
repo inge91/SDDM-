@@ -18,7 +18,7 @@ namespace AssemblyCSharp
 				{
 					break;
 				}
-				i++;
+				i++;	
 			}
 			file = new System.IO.StreamWriter (directory + filename + i.ToString() + ".csv");
 			file.WriteLine (header);
