@@ -7,6 +7,7 @@ public class TrajectoryController : MonoBehaviour {
 	public GameObject bulletSpawnerTutorial;
 	public GameObject tutorialPanel;
 	public GameObject testPanel;
+	public GameObject finishPanel;
 
 	private int progress = 0;
 
@@ -34,6 +35,8 @@ public class TrajectoryController : MonoBehaviour {
 
 		if ((progress == 1) && !bulletSpawnerTutorial.activeSelf)
 			endTutorial ();
+		if ((progress == 3) && !bulletSpawner.activeSelf)
+			endTest ();
 	}
 
 	public void startTutorial()
@@ -54,6 +57,13 @@ public class TrajectoryController : MonoBehaviour {
 	{
 		Destroy (testPanel);
 		bulletSpawner.SetActive (true);
+		progress++;
+	}
+	
+	public void endTest()
+	{
+		Destroy (bulletSpawner);
+		finishPanel.SetActive (true);
 		progress++;
 	}
 }
