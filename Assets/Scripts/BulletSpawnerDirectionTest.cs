@@ -59,6 +59,7 @@ public class BulletSpawnerDirectionTest : MonoBehaviour
         if (Input.GetButtonDown("Fire1") && !spawning) 
         {
             Vector3 lookDirection = getLookDirection();
+            Debug.Log("Look Direction: " + lookDirection);
             markEstimatedBall(lookDirection);
         }
         // all guesses have been made
@@ -138,9 +139,11 @@ public class BulletSpawnerDirectionTest : MonoBehaviour
     {
         //get oculus look direction
         var centerEyeAnchor = playerObject.transform.GetChild(1);
-        Vector3 lookForward = centerEyeAnchor.forward;
+        //Vector3 lookForward = centerEyeAnchor.forward;
+        Vector3 lookForward = Camera.main.transform.forward;
         if (!directionIs3D)
             lookForward.y = 0;
+
         return lookForward;
     }
 
