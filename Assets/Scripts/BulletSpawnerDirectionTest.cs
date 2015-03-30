@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using AssemblyCSharp;
+using System.IO;
 
 
 public class BulletSpawnerDirectionTest : MonoBehaviour
@@ -45,8 +46,12 @@ public class BulletSpawnerDirectionTest : MonoBehaviour
 
         if (writeOutput)
         {
-            csvWriter = new CsvWriter("Audio"+ amountOfSounds +"DirectionEstimateTest.txt", "Object number, Actual position, Estimated postion, Error angle");
-            csvWriter.writeLineToFile("-- " + "amount:" + amountOfSounds +" ,3D:" + directionIs3D + " ,only front:" + directionOnlyFront +" ,unique sounds:"+uniqueSounds);
+            // Create output files
+            using (StreamWriter sw = new StreamWriter("TestResults/Audio"+ amountOfSounds +"DirectionEstimateTest.txt"))
+            {
+                sw.WriteLine("Object number, Actual position, Estimated postion, Error angle");
+                sw.WriteLine("-- " + "amount:" + amountOfSounds + " ,3D:" + directionIs3D + " ,only front:" + directionOnlyFront + " ,unique sounds:" + uniqueSounds);
+            }
         }
 
         if(currentIteration < iterations)
@@ -59,14 +64,17 @@ public class BulletSpawnerDirectionTest : MonoBehaviour
         if (Input.GetButtonDown("Fire1") && !spawning) 
         {
             Vector3 lookDirection = getLookDirection();
-            Debug.Log("Look Direction: " + lookDirection);
+            //Debug.Log("Look Direction: " + lookDirection);
             markEstimatedBall(lookDirection);
         }
         // all guesses have been made
         if (!spawning && ballsGuessed.Count == balls.Count && balls.Count > 0)
         {
             if (writeOutput)
-                csvWriter.writeLineToFile("--------iteration Done------------------");
+                using (StreamWriter sw = new StreamWriter("TestResults/Audio"+ amountOfSounds +"DirectionEstimateTest.txt", true))
+                {
+                    sw.WriteLine("--------iteration Done------------------");
+                }
             Debug.Log("completed with iteration");
 
             DestroyBalls();
@@ -77,7 +85,10 @@ public class BulletSpawnerDirectionTest : MonoBehaviour
             else
             {
                 if (writeOutput)
-                    csvWriter.writeLineToFile("--------Experiment Done------------------");
+                    using (StreamWriter sw = new StreamWriter("TestResults/Audio" + amountOfSounds + "DirectionEstimateTest.txt", true))
+                    {
+                        sw.WriteLine("--------Experiment Done------------------");
+                    }
                 StartCoroutine(enableGui());
             }
         }
@@ -171,13 +182,17 @@ public class BulletSpawnerDirectionTest : MonoBehaviour
             // mark the closest ball as found
             if (closestBall != null)
             {
+                
                 ballsGuessed.Add(closestBall);
-                AudioSource.PlayClipAtPoint(selectSound, playerObject.transform.position);
-                //write error
+                // TODO: Add confirmation sound in inspector
+                //AudioSource.PlayClipAtPoint(selectSound, playerObject.transform.position);
                 if (writeOutput)
                 {
                     Vector3 estimatedPosition = lookDirection * radius;
-                    csvWriter.writeLineToFile(ballsGuessed.Count + ", " + closestBall.transform.position.ToString() + ", " + estimatedPosition.ToString() + ", " + closestAngle);
+                    using (StreamWriter sw = new StreamWriter("TestResults/Audio" + amountOfSounds + "DirectionEstimateTest.txt", true))
+                    {
+                        sw.WriteLine(ballsGuessed.Count + ", " + closestBall.transform.position.ToString() + ", " + estimatedPosition.ToString() + ", " + closestAngle);
+                    }
                 }
                 Debug.Log("Guess processed " + (balls.Count - ballsGuessed.Count) + " more to go");
             }

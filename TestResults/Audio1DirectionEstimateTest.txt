@@ -1,0 +1,9 @@
+Object number, Actual position, Estimated postion, Error angle
+-- amount:1 ,3D:True ,only front:True ,unique sounds:True
+1, (0.1, -0.4, 3.0), (-0.9, -0.2, 2.8), 19.81236
+--------iteration Done------------------
+1, (0.9, 2.3, 1.7), (-1.8, 0.1, 2.4), 72.32916
+--------iteration Done------------------
+1, (1.9, -1.1, 2.1), (2.0, 0.3, 2.2), 27.38197
+--------iteration Done------------------
+--------Experiment Done------------------
