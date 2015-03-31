@@ -141,14 +141,6 @@ public class BulletSpawnerDistanceTest : MonoBehaviour {
 
 		}
 
-		for(int i = 0; i < partitionsToTest; i ++)
-		{
-			for(int j = 0; j < distancesToTest.Length; j ++)
-			{
-			
-
-			}
-		}
 	}
 
 	IEnumerator spawnBallAfterInterval(bool movingBall)
@@ -184,7 +176,8 @@ public class BulletSpawnerDistanceTest : MonoBehaviour {
 			float estimateError = Mathf.Abs(estimate - radius);
 			if(!isExample)
 			{
-				csvWriter.writeLineToFile(projectileStartPosition + "; " +  radius + "; " + estimate + "; " + estimateError);	
+
+				csvWriter.writeLineToFile(  ball.transform.position + "; " +  radius + "; " + estimate + "; " + estimateError);	
 			}
 			if(isExample)
 			{
