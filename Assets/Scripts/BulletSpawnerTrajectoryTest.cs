@@ -45,8 +45,9 @@ public class BulletSpawnerTrajectoryTest : MonoBehaviour
 	{
 		timeSinceLastProjectile = Time.time;
 		targetPosition = targetObject.transform.position;
-		csvWriter = new CsvWriter("TrajectoryTest", "reactionTime;closestDist;hit;correct;direction");
 		Random.seed = randomSeed;
+		if (!isTutorial)
+			csvWriter = new CsvWriter("TrajectoryTest", "reactionTime;closestDist;hit;correct;direction");
 	}
 	
 	// Update is called once per frame
@@ -57,7 +58,7 @@ public class BulletSpawnerTrajectoryTest : MonoBehaviour
 		if(Time.time - timeSinceLastProjectile > intervalBetweenProjectiles)
 		{
 			// Log experiment data.
-			if (currentTest > 0)
+			if ((currentTest > 0) && !isTutorial)
 			{
 				bool hit = closestDistance < hitRange;
 				bool correct = hasClicked && (hit == guess);
@@ -70,6 +71,8 @@ public class BulletSpawnerTrajectoryTest : MonoBehaviour
 			currentTest++;
 			if (currentTest > testCount)
 			{
+				if (!isTutorial)
+					csvWriter.Close();
 				gameObject.SetActive(false);
 				Debug.Log("STOP");
 				return;
