@@ -9,25 +9,28 @@ public class BulletSpawnerDirectionTest : MonoBehaviour
 {
 
     // public variables set in unity scene inspector
-    public bool isExample;
+   // public bool isExample;
     public bool writeOutput;
-    public int iterations;           // how many times a new set of directions will be generated
     public GameObject objectToSpawn;  //used to generate new objects making sounds
     public GameObject playerObject;
+    public GameObject gui;
+
+    public float startDelay;        // wait a little before starting the spawning etc
+    public int amountOfObjects;      //amount of sound emitting objects spawned
+    public bool uniqueSounds;       // do they play unique sounds
+    public float audioSpawnDelay;  //delay inbetween spawns
+    public AudioClip selectSound;
+    public List<AudioClip> audioClips;
+
     public float radius;            // constant value of how far away objects are
     public bool directionOnlyFront; // don't place sounds behind the player
     public bool directionIs3D;      //place sound on 2d circle or 3d sphere
     public float heightLimit = 0.125f; // don't use the upper and lower 1/8
 
-
-    public float startDelay;        // wait a little before starting the spawning etc
-    public int amountOfSounds;      //amount of sound emitting objects spawned
-    public bool uniqueSounds;       // do they play unique sounds
-    public float audioSpawnDelay;  //delay inbetween spawns
-    public AudioClip selectSound;
-    public List<AudioClip> audioClips;
-    public GameObject gui;
-    
+    public int iterations;           // how many times a new set of directions will be generated
+    // list of positions to use in order of spawning, in pi*radians
+    public List<Vector2> positionsInPiRadians; //radX 0 -> right, radx pi -> left
+                                               //radY 0 -> top, radY pi -> bottom
 
     // private variables in code
     private List<GameObject> balls;
@@ -36,7 +39,7 @@ public class BulletSpawnerDirectionTest : MonoBehaviour
     private CsvWriter csvWriter;
     private bool spawning = false;
     private int currentIteration = 0;
-
+    private int amountSpawned = 0;
 
     void Start()
     {
@@ -46,12 +49,8 @@ public class BulletSpawnerDirectionTest : MonoBehaviour
 
         if (writeOutput)
         {
-            // Create output files
-            using (StreamWriter sw = new StreamWriter("TestResults/Audio"+ amountOfSounds +"DirectionEstimateTest.txt"))
-            {
-                sw.WriteLine("Object number, Actual position, Estimated postion, Error angle");
-                sw.WriteLine("-- " + "amount:" + amountOfSounds + " ,3D:" + directionIs3D + " ,only front:" + directionOnlyFront + " ,unique sounds:" + uniqueSounds);
-            }
+            csvWriter = new CsvWriter("Audio" + amountOfObjects + "DirectionEstimateTest", "Iteration number; Actual position; Estimated postion; Error angle");
+            csvWriter.writeLineToFile("-- " + "amount:" + amountOfObjects + " ,3D:" + directionIs3D + " ,only front:" + directionOnlyFront + " ,unique sounds:" + uniqueSounds);
         }
 
         if(currentIteration < iterations)
@@ -71,10 +70,7 @@ public class BulletSpawnerDirectionTest : MonoBehaviour
         if (!spawning && ballsGuessed.Count == balls.Count && balls.Count > 0)
         {
             if (writeOutput)
-                using (StreamWriter sw = new StreamWriter("TestResults/Audio"+ amountOfSounds +"DirectionEstimateTest.txt", true))
-                {
-                    sw.WriteLine("--------iteration Done------------------");
-                }
+                csvWriter.writeLineToFile("--------Iteration Done------------------");
             Debug.Log("completed with iteration");
 
             DestroyBalls();
@@ -85,10 +81,10 @@ public class BulletSpawnerDirectionTest : MonoBehaviour
             else
             {
                 if (writeOutput)
-                    using (StreamWriter sw = new StreamWriter("TestResults/Audio" + amountOfSounds + "DirectionEstimateTest.txt", true))
-                    {
-                        sw.WriteLine("--------Experiment Done------------------");
-                    }
+                {
+                    csvWriter.writeLineToFile("--------Experiment Done------------------");
+                    csvWriter.Close();
+                }
                 StartCoroutine(enableGui());
             }
         }
@@ -99,7 +95,7 @@ public class BulletSpawnerDirectionTest : MonoBehaviour
     {
         currentIteration++;
         spawning = true;
-        int amount = amountOfSounds;
+        int amount = amountOfObjects;
         if (uniqueSounds) // if unique sounds are required, you can't spawn more than there are sounds
             amount = audioClips.Count < amount ? audioClips.Count : amount;
 
@@ -109,18 +105,35 @@ public class BulletSpawnerDirectionTest : MonoBehaviour
             if (i > 0 && audioSpawnDelay > 0)
             {
                 yield return new WaitForSeconds(audioSpawnDelay);
-                spawnBall(i, randomPosition());
+                spawnBall(i);
             }
             else
-                spawnBall(i, randomPosition());
+                spawnBall(i);
         }
         spawning = false;
         yield return null;
     }
 
     // spawn a static ball that emits sound
-    private void spawnBall(int id, Vector3 ballPosition)
+    private void spawnBall(int id)
     {
+        Vector3 ballPosition;
+        if (positionsInPiRadians.Count > amountSpawned)
+        {
+            Vector2 radiansxy = positionsInPiRadians[amountSpawned];
+            if (directionIs3D)
+                ballPosition = positionOnSphere(radiansxy.x * Mathf.PI, radiansxy.y * Mathf.PI);
+            else
+                ballPosition = positionOnCircle(radiansxy.x * Mathf.PI);
+        }
+        else
+        {
+            Debug.Log("No more predetermined positions, used random");
+            ballPosition = randomPosition();
+        }
+       
+
+        amountSpawned++;
         GameObject ball = Instantiate(objectToSpawn);
 
         // use a static projectile for now
@@ -185,14 +198,11 @@ public class BulletSpawnerDirectionTest : MonoBehaviour
                 
                 ballsGuessed.Add(closestBall);
                 // TODO: Add confirmation sound in inspector
-                //AudioSource.PlayClipAtPoint(selectSound, playerObject.transform.position);
+                AudioSource.PlayClipAtPoint(selectSound, playerObject.transform.position);
                 if (writeOutput)
                 {
                     Vector3 estimatedPosition = lookDirection * radius;
-                    using (StreamWriter sw = new StreamWriter("TestResults/Audio" + amountOfSounds + "DirectionEstimateTest.txt", true))
-                    {
-                        sw.WriteLine(ballsGuessed.Count + ", " + closestBall.transform.position.ToString() + ", " + estimatedPosition.ToString() + ", " + closestAngle);
-                    }
+                    csvWriter.writeLineToFile(iterations + "; " + closestBall.transform.position.ToString() + "; " + estimatedPosition.ToString() + "; " + closestAngle);
                 }
                 Debug.Log("Guess processed " + (balls.Count - ballsGuessed.Count) + " more to go");
             }
