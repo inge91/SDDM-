@@ -16,16 +16,16 @@ public class DiscreteDistanceEstimation : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		selectableCircles = new GameObject[radiiOfEstimationInterval.Length];
-		createCircleObject (maxRadius, 0.15f, "OuterRing", maxCircelMaterial, 0);
+		createCircleObject (maxRadius, 1.5f, "OuterRing", maxCircelMaterial, 0);
 		for(int i = 0; i < radiiOfEstimationInterval.Length; i++)
 		{
-			selectableCircles[i] =  createCircleObject (radiiOfEstimationInterval[i], 0.05f, "ring", betweenCircelsMaterial, 1);
+			selectableCircles[i] =  createCircleObject (radiiOfEstimationInterval[i], 0.5f, "ring", betweenCircelsMaterial, 1);
 		}
 		currentIndex = radiiOfEstimationInterval.Length - 1;
 
 		LineRenderer lineRenderer = selectionCircle.GetComponent<LineRenderer> ();
 		lineRenderer.SetVertexCount (66);
-		lineRenderer.SetWidth (0.05f, 0.05f);
+		lineRenderer.SetWidth (0.5f, 0.5f);
 		lineRenderer.material = selectionCircelMaterial;
 		selectionCircle.GetComponent<CircleDraw>().SetCurrentCircleRadius(radiiOfEstimationInterval[currentIndex]);
 	}

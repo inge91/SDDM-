@@ -45,7 +45,7 @@ public class BulletSpawnerDistanceTest : MonoBehaviour {
 		targetPosition = targetObject.transform.position;
 
 		if (!isExample) {
-			csvWriter = new CsvWriter ("AudioDistanceEstimateTest.txt", "ActualDistance, EstimateDistance, Error");
+			csvWriter = new CsvWriter ("AudioDistanceEstimateTest", "ProjectilePosition, ActualDistance; EstimateDistance; Error");
 		};
 		if (playSoundRangeDemo) {
 			StartCoroutine("spawnBallAfterInterval", true);
@@ -53,14 +53,100 @@ public class BulletSpawnerDistanceTest : MonoBehaviour {
 			StartCoroutine("spawnBallAfterInterval", false);
 		}
 
-		discreteInputList = new  List<DistancePartitionStruct>();
-		float radians = (2 * Mathf.PI) / partitionsToTest; 
+		discreteInputList = new  List<DistancePartitionStruct>(); 
+		if (isExample) {
+			DistancePartitionStruct s = new DistancePartitionStruct(0, 60);
+			discreteInputList.Add(s);
+			s = new DistancePartitionStruct(0, 20);
+			discreteInputList.Add(s);
+			s = new DistancePartitionStruct(0, 100);
+			discreteInputList.Add(s);
+		} else {
+			float partition = (Mathf.PI * 2) / 8.0f;
+			DistancePartitionStruct s = new DistancePartitionStruct(partition * 0, 60);
+			discreteInputList.Add(s);
+			s = new DistancePartitionStruct(partition * 5, 20);
+			discreteInputList.Add(s);
+			s = new DistancePartitionStruct(partition * 2, 40);
+			discreteInputList.Add(s);
+			s = new DistancePartitionStruct(partition * 6, 80);
+			discreteInputList.Add(s);
+			s = new DistancePartitionStruct(partition * 4, 60);
+			discreteInputList.Add(s);
+			s = new DistancePartitionStruct(partition * 1, 20);
+			discreteInputList.Add(s);
+			s = new DistancePartitionStruct(partition * 3, 20);
+			discreteInputList.Add(s);
+			s = new DistancePartitionStruct(partition * 8, 60);
+			discreteInputList.Add(s);
+			s = new DistancePartitionStruct(partition * 7, 80);
+			discreteInputList.Add(s);
+
+			s = new DistancePartitionStruct(partition * 3, 40);
+			discreteInputList.Add(s);
+			s = new DistancePartitionStruct(partition * 6, 60);
+			discreteInputList.Add(s);
+			s = new DistancePartitionStruct(partition * 8, 20);
+			discreteInputList.Add(s);
+			s = new DistancePartitionStruct(partition * 4, 40);
+			discreteInputList.Add(s);
+			s = new DistancePartitionStruct(partition * 7, 60);
+			discreteInputList.Add(s);
+			s = new DistancePartitionStruct(partition * 1, 40);
+			discreteInputList.Add(s);
+			s = new DistancePartitionStruct(partition * 2, 80);
+			discreteInputList.Add(s);
+			s = new DistancePartitionStruct(partition * 0, 40);
+			discreteInputList.Add(s);
+			s = new DistancePartitionStruct(partition * 5, 80);
+			discreteInputList.Add(s);
+
+			s = new DistancePartitionStruct(partition * 2, 60);
+			discreteInputList.Add(s);
+			s = new DistancePartitionStruct(partition * 7, 20);
+			discreteInputList.Add(s);
+			s = new DistancePartitionStruct(partition * 0, 80);
+			discreteInputList.Add(s);
+			s = new DistancePartitionStruct(partition * 3, 60);
+			discreteInputList.Add(s);
+			s = new DistancePartitionStruct(partition * 4, 80);
+			discreteInputList.Add(s);
+			s = new DistancePartitionStruct(partition * 8, 80);
+			discreteInputList.Add(s);
+			s = new DistancePartitionStruct(partition * 5, 60);
+			discreteInputList.Add(s);
+			s = new DistancePartitionStruct(partition * 1, 60);
+			discreteInputList.Add(s);
+			s = new DistancePartitionStruct(partition * 6, 40);
+			discreteInputList.Add(s);
+	
+			s = new DistancePartitionStruct(partition * 3, 80);
+			discreteInputList.Add(s);
+			s = new DistancePartitionStruct(partition * 6, 20);
+			discreteInputList.Add(s);
+			s = new DistancePartitionStruct(partition * 8, 40);
+			discreteInputList.Add(s);
+			s = new DistancePartitionStruct(partition * 4, 20);
+			discreteInputList.Add(s);
+			s = new DistancePartitionStruct(partition * 7, 40);
+			discreteInputList.Add(s);
+			s = new DistancePartitionStruct(partition * 1, 80);
+			discreteInputList.Add(s);
+			s = new DistancePartitionStruct(partition * 2, 20);
+			discreteInputList.Add(s);
+			s = new DistancePartitionStruct(partition * 0, 20);
+			discreteInputList.Add(s);
+			s = new DistancePartitionStruct(partition * 5, 40);
+			discreteInputList.Add(s);
+
+		}
+
 		for(int i = 0; i < partitionsToTest; i ++)
 		{
 			for(int j = 0; j < distancesToTest.Length; j ++)
 			{
-				DistancePartitionStruct s = new DistancePartitionStruct(radians * i, distancesToTest[j]);
-				discreteInputList.Add(s);
+			
+
 			}
 		}
 	}
@@ -98,7 +184,7 @@ public class BulletSpawnerDistanceTest : MonoBehaviour {
 			float estimateError = Mathf.Abs(estimate - radius);
 			if(!isExample)
 			{
-				csvWriter.writeLineToFile(radius + ", " + estimate +", "+ estimateError);	
+				csvWriter.writeLineToFile(projectileStartPosition + "; " +  radius + "; " + estimate + "; " + estimateError);	
 			}
 			if(isExample)
 			{
@@ -125,7 +211,7 @@ public class BulletSpawnerDistanceTest : MonoBehaviour {
 		yield return null;
 		destroyingObjectDelay = false;
 	}
-
+	Vector3 projectileStartPosition ;
 	private void spawnBall(bool ballIsMoving)
 	{
 		activeBallIsDemoBall = ballIsMoving;
@@ -142,7 +228,7 @@ public class BulletSpawnerDistanceTest : MonoBehaviour {
 			z = targetPosition.y + radius * Mathf.Sin(Mathf.PI/2);
 			Vector3 projectileStartPosition = new Vector3(x, y, z);
 			Vector3 direction = Vector3.Normalize(targetPosition - projectileStartPosition);
-			ball.GetComponent<ProjectileBehaviour>().Init(projectileStartPosition, direction, 1, targetObject, csvWriter);
+			ball.GetComponent<ProjectileBehaviour>().Init(projectileStartPosition, direction, 10, targetObject, csvWriter);
 		} else {
 
 			float x,y,z;
@@ -158,6 +244,7 @@ public class BulletSpawnerDistanceTest : MonoBehaviour {
 						gui.SetActive(true);
 					}
 					else{
+						csvWriter.Close();
 					}
 				}
 				else
@@ -184,12 +271,13 @@ public class BulletSpawnerDistanceTest : MonoBehaviour {
 				y = 0;
 				z = targetPosition.y + radius * Mathf.Sin(radians);
 				
-				Vector3 projectileStartPosition = new Vector3(x, y, z);
+				projectileStartPosition = new Vector3(x, y, z);
 				ball.GetComponent<ProjectileBehaviour> ().Init (projectileStartPosition, new Vector3 (0, 0, 0), 0, targetObject, csvWriter);
 				ball.GetComponent<ProjectileBehaviour> ().SetVisible (false);
 			
 			}
 		}
+		ball.transform.localScale = new Vector3 (10, 10, 10);
 		// This should be handled in the projectile itself in my opinion.
 		ball.AddComponent<AudioSource>();
 		ball.GetComponent<AudioSource>().clip = bulletSound;
