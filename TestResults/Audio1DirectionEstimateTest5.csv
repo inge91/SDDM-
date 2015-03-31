@@ -1,0 +1,13 @@
+Iteration number; Actual position; Estimated postion; Error angle
+-- amount:1 ,3D:True ,only front:True ,unique sounds:True
+5; (3.0, 0.0, 0.0); (2.4, -0.6, 1.6); 35.98782
+--------Iteration Done------------------
+5; (-3.0, 0.0, 0.0); (2.5, -0.6, 1.6); 145.8106
+--------Iteration Done------------------
+5; (0.0, 0.0, 3.0); (2.5, -0.6, 1.6); 58.14706
+--------Iteration Done------------------
+5; (1.1, 2.8, 0.0); (2.5, -0.6, 1.6); 81.95814
+--------Iteration Done------------------
+5; (1.1, -2.8, 0.0); (2.5, -0.6, 1.6); 60.36928
+--------Iteration Done------------------
+--------Experiment Done------------------

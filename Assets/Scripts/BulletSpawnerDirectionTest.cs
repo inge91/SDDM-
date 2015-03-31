@@ -13,6 +13,7 @@ public class BulletSpawnerDirectionTest : MonoBehaviour
     public bool writeOutput;
     public GameObject objectToSpawn;  //used to generate new objects making sounds
     public GameObject playerObject;
+	public GameObject centerEye;
     public GameObject gui;
 
     public float startDelay;        // wait a little before starting the spawning etc
@@ -162,8 +163,8 @@ public class BulletSpawnerDirectionTest : MonoBehaviour
     private Vector3 getLookDirection()
     {
         //get oculus look direction
-        var centerEyeAnchor = playerObject.transform.GetChild(1);
-        Vector3 lookForward = centerEyeAnchor.forward;
+      //  var centerEyeAnchor = playerObject.transform.GetChild(1);
+		Vector3 lookForward = centerEye.transform.forward;//centerEyeAnchor.forward;
         //Vector3 lookForward = Camera.main.transform.forward;
         if (!directionIs3D)
             lookForward.y = 0;

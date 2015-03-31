@@ -20,7 +20,7 @@ Platform assembly: C:\Users\MiloBU\Documenten\3D\SDDM-\Distance_DiscreteTest_Dat
 Loading C:\Users\MiloBU\Documenten\3D\SDDM-\Distance_DiscreteTest_Data\Managed\XInputDotNetPure.dll into Unity Child Domain
 Platform assembly: C:\Users\MiloBU\Documenten\3D\SDDM-\Distance_DiscreteTest_Data\Managed\UnityEngine.UI.dll (this message is harmless)
 Loading C:\Users\MiloBU\Documenten\3D\SDDM-\Distance_DiscreteTest_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
-- Completed reload, in  0.051 seconds
+- Completed reload, in  0.149 seconds
 <RI> Initializing input.
 <RI> Input initialized.
 desktop: 1366x768 60Hz; virtual: 1366x768 at 0,0
@@ -52,5 +52,5 @@ OSP: num buffers: 4
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
 
 Setting up 2 worker threads for Enlighten.
-  Thread -> id: 2110 -> priority: 1 
-  Thread -> id: 23d0 -> priority: 1 
+  Thread -> id: 2670 -> priority: 1 
+  Thread -> id: 6b8 -> priority: 1 
