@@ -44,7 +44,7 @@ public class DiscreteDistanceEstimation : MonoBehaviour {
 			axisMoved = false;
 		}
 		float radius = selectableCircles[currentIndex].GetComponent<CircleDraw>().GetCurrentCircleRadius();
-		selectionCircle.GetComponent<CircleDraw>().SetCurrentCircleRadius(radius);	
+		selectionCircle.GetComponent<CircleDraw>().SetCurrentCircleRadius(radius);
 	}
 
 	GameObject createCircleObject(float radius, float lineWidth, string name, Material m, float height)

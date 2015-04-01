@@ -61,7 +61,7 @@ public class CircleDraw : MonoBehaviour {
 
 	public float GetCurrentCircleRadius()
 	{
-		return currentRadius;
+        return maxRadius;
 	}
 
 	public void SetCurrentCircleRadius(float radius)
