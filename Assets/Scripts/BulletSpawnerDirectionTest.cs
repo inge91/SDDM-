@@ -51,7 +51,7 @@ public class BulletSpawnerDirectionTest : MonoBehaviour
 
         if (writeOutput)
         {
-            csvWriter = new CsvWriter("Audio" + amountOfObjects + "DirectionEstimateTest", "Iteration number; Actual position; Estimated postion; Horizontal angle; Vertical angle; Time");
+            csvWriter = new CsvWriter("Audio" + amountOfObjects + "DirectionEstimateTest", "Iteration number; Actual position; Estimated postion; Angle; Horizontal angle; Vertical angle; Time");
             csvWriter.writeLineToFile("-- " + "amount:" + amountOfObjects + " ,3D:" + directionIs3D + " ,only front:" + directionOnlyFront + " ,unique sounds:" + uniqueSounds);
         }
 
@@ -209,10 +209,11 @@ public class BulletSpawnerDirectionTest : MonoBehaviour
 
                     // calculate separate angles in the horizontal and vertical plane
                     Quaternion angle = Quaternion.LookRotation(lookDirection, closestBall.transform.position);
-                   
+                    float angleX = angle.eulerAngles.x > 180 ? (360 -angle.eulerAngles.x) : angle.eulerAngles.x;
+                    float angleY = angle.eulerAngles.y > 180 ? (360 -angle.eulerAngles.y) : angle.eulerAngles.y;
 
-                    csvWriter.writeLineToFile(currentIteration + "; " + closestBall.transform.position.ToString() + "; " + estimatedPosition.ToString() + "; " 
-                         + angle.eulerAngles.x + "; " + angle.eulerAngles.y + "; " + timer);
+                    csvWriter.writeLineToFile(currentIteration + "; " + closestBall.transform.position.ToString() + "; " + estimatedPosition.ToString() + "; " +
+                        closestAngle +"; " +  angleX + "; " + angleY + "; " + timer);
                 }
                 Debug.Log("Guess processed " + (balls.Count - ballsGuessed.Count) + " more to go");
             }
