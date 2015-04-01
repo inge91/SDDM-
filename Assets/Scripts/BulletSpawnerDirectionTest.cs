@@ -41,6 +41,7 @@ public class BulletSpawnerDirectionTest : MonoBehaviour
     private bool spawning = false;
     private int currentIteration = 0;
     private int amountSpawned = 0;
+    private float timer = 0;
 
     void Start()
     {
@@ -50,7 +51,7 @@ public class BulletSpawnerDirectionTest : MonoBehaviour
 
         if (writeOutput)
         {
-            csvWriter = new CsvWriter("Audio" + amountOfObjects + "DirectionEstimateTest", "Iteration number; Actual position; Estimated postion; Error angle; Horizontal angle; Vertical angle");
+            csvWriter = new CsvWriter("Audio" + amountOfObjects + "DirectionEstimateTest", "Iteration number; Actual position; Estimated postion; Error angle; Horizontal angle; Vertical angle; Time");
             csvWriter.writeLineToFile("-- " + "amount:" + amountOfObjects + " ,3D:" + directionIs3D + " ,only front:" + directionOnlyFront + " ,unique sounds:" + uniqueSounds);
         }
 
@@ -60,11 +61,12 @@ public class BulletSpawnerDirectionTest : MonoBehaviour
 
     void Update()
     {
+        timer += Time.deltaTime;
         // confirm direction with left mouse or A on controller
         if (Input.GetButtonDown("Fire1") && !spawning) 
         {
             Vector3 lookDirection = getLookDirection();
-            //Debug.Log("Look Direction: " + lookDirection);
+            //Debug.Log("Timer: " + timer);
             markEstimatedBall(lookDirection);
         }
         // all guesses have been made
@@ -94,6 +96,7 @@ public class BulletSpawnerDirectionTest : MonoBehaviour
     // spawn a given number of balls
     IEnumerator spawnBallsAfterInterval()
     {
+        timer = 0;
         currentIteration++;
         spawning = true;
         int amount = amountOfObjects;
@@ -213,7 +216,7 @@ public class BulletSpawnerDirectionTest : MonoBehaviour
                     float verAngle = Vector3.Angle(verLookDirection, verBallPosition);
 
                     csvWriter.writeLineToFile(currentIteration + "; " + closestBall.transform.position.ToString() + "; " + estimatedPosition.ToString() + "; " 
-                        + closestAngle + "; " + horAngle + "; " + verAngle);
+                        + closestAngle + "; " + horAngle + "; " + verAngle + "; " + timer);
                 }
                 Debug.Log("Guess processed " + (balls.Count - ballsGuessed.Count) + " more to go");
             }
