@@ -51,7 +51,7 @@ public class BulletSpawnerDirectionTest : MonoBehaviour
 
         if (writeOutput)
         {
-            csvWriter = new CsvWriter("Audio" + amountOfObjects + "DirectionEstimateTest", "Iteration number; Actual position; Estimated postion; Error angle; Horizontal angle; Vertical angle; Time");
+            csvWriter = new CsvWriter("Audio" + amountOfObjects + "DirectionEstimateTest", "Iteration number; Actual position; Estimated postion; Angle; Horizontal angle; Vertical angle; Time");
             csvWriter.writeLineToFile("-- " + "amount:" + amountOfObjects + " ,3D:" + directionIs3D + " ,only front:" + directionOnlyFront + " ,unique sounds:" + uniqueSounds);
         }
 
@@ -208,15 +208,12 @@ public class BulletSpawnerDirectionTest : MonoBehaviour
                     Vector3 estimatedPosition = lookDirection * radius;
 
                     // calculate separate angles in the horizontal and vertical plane
-                    Vector3 horLookDirection = new Vector3(lookDirection.x, 0, lookDirection.z);
-                    Vector3 horBallPosition = new Vector3(closestBall.transform.position.x, 0, closestBall.transform.position.z);
-                    Vector3 verLookDirection = new Vector3(0, lookDirection.y, lookDirection.z);
-                    Vector3 verBallPosition = new Vector3(closestBall.transform.position.x, 0, closestBall.transform.position.z);
-                    float horAngle = Vector3.Angle(horLookDirection, horBallPosition);
-                    float verAngle = Vector3.Angle(verLookDirection, verBallPosition);
+                    Quaternion angle = Quaternion.LookRotation(lookDirection, closestBall.transform.position);
+                    float angleX = angle.eulerAngles.x > 180 ? (360 -angle.eulerAngles.x) : angle.eulerAngles.x;
+                    float angleY = angle.eulerAngles.y > 180 ? (360 -angle.eulerAngles.y) : angle.eulerAngles.y;
 
-                    csvWriter.writeLineToFile(currentIteration + "; " + closestBall.transform.position.ToString() + "; " + estimatedPosition.ToString() + "; " 
-                        + closestAngle + "; " + horAngle + "; " + verAngle + "; " + timer);
+                    csvWriter.writeLineToFile(currentIteration + "; " + closestBall.transform.position.ToString() + "; " + estimatedPosition.ToString() + "; " +
+                        closestAngle +"; " +  angleX + "; " + angleY + "; " + timer);
                 }
                 Debug.Log("Guess processed " + (balls.Count - ballsGuessed.Count) + " more to go");
             }
