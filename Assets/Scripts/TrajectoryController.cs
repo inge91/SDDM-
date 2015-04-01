@@ -17,11 +17,6 @@ public class TrajectoryController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		// TODO:
-		// 1. Activate UI.
-		// 2. After button press, activate tutorial.
-		// 3. After tutorial stops, activate UI.
-		// 4. After button press, activate actual experiment.
 		if (Input.anyKey) {
 			switch (progress){
 			case 0:
