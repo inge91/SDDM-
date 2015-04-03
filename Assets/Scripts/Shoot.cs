@@ -3,24 +3,27 @@ using System.Collections;
 
 public class Shoot : MonoBehaviour {
 
-    public int speed = 2;
+    public float speed = 2;
 
-    public float timing;
+    public float fireRate;
+    public Transform shotSpawn;
+    public GameObject shot;
 
+    private float nextFire;
 
 	// Use this for initialization
 	void Start () {
         speed = 2;
-        timing = 10;
+        fireRate = 10;
 	}
 	
 	// Update is called once per frame
 	void Update () {
+
+        if(Input.GetMouseButtonDown(0) || Input.GetKeyDown("space")) {
+            nextFire = Time.time + fireRate;
+            Instantiate(shot, shotSpawn.position, shotSpawn.rotation);
+        }
 	
 	}
-
-    // On left mouse click and on space shoot
-    void ontriggerEnter() {
-
-    }
 }
