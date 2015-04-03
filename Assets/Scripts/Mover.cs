@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Mover : MonoBehaviour {
 
-    public float speed = 2;
+    public float speed;
 
     //void Start () {
     //    (Rigidbody)this.
