@@ -4,6 +4,7 @@ using System.Collections;
 public class Shoot : MonoBehaviour {
 
     public float speed = 2;
+	public bool autoFire = false;
 
     public float fireRate;
     public Transform shotSpawn;
@@ -14,13 +15,19 @@ public class Shoot : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         speed = 2;
-        fireRate = 10;
+        fireRate = 1;
+		nextFire = Time.time + fireRate;
 	}
 	
 	// Update is called once per frame
 	void Update () {
 
-        if(Input.GetMouseButtonDown(0) || Input.GetKeyDown("space")) {
+		if(autoFire){
+			if (Time.time > nextFire) {
+				nextFire = Time.time + fireRate;
+				Instantiate(shot, shotSpawn.position, shotSpawn.rotation);
+			}
+		}else if(Input.GetMouseButtonDown(0) || Input.GetKeyDown("space")) {
             nextFire = Time.time + fireRate;
             Instantiate(shot, shotSpawn.position, shotSpawn.rotation);
         }
