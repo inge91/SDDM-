@@ -206,14 +206,22 @@ public class BulletSpawnerDirectionTest : MonoBehaviour
                 if (writeOutput)
                 {
                     Vector3 estimatedPosition = lookDirection * radius;
-
+                    
                     // calculate separate angles in the horizontal and vertical plane
-                    Quaternion angle = Quaternion.LookRotation(lookDirection, closestBall.transform.position);
-                    float angleX = angle.eulerAngles.x > 180 ? (360 -angle.eulerAngles.x) : angle.eulerAngles.x;
-                    float angleY = angle.eulerAngles.y > 180 ? (360 -angle.eulerAngles.y) : angle.eulerAngles.y;
+          
+                    //rotation around y axis (head left to right)
+                    double rad2Deg = (180.0 / System.Math.PI);
+                    float lookAngle = (float)(System.Math.Atan2(lookDirection.x, lookDirection.z) * rad2Deg);
+                    float ballAngle = (float)(System.Math.Atan2(closestBall.transform.position.x, closestBall.transform.position.z) * rad2Deg);
+                    float diff = Mathf.DeltaAngle(lookAngle, ballAngle);
+                    //rotate to be the same angle around y
+                    Vector3 rotatedLook = Quaternion.Euler(0, diff, 0) * lookDirection;
+                    float yaw = diff;
+                    // rotation around x axis (head up down)
+                    float pitch = Vector3.Angle(rotatedLook, closestBall.transform.position);
 
                     csvWriter.writeLineToFile(currentIteration + "; " + closestBall.transform.position.ToString() + "; " + estimatedPosition.ToString() + "; " +
-                        closestAngle +"; " +  angleX + "; " + angleY + "; " + timer);
+                        closestAngle +"; " +  yaw + "; " + pitch + "; " + timer);
                 }
                 Debug.Log("Guess processed " + (balls.Count - ballsGuessed.Count) + " more to go");
             }
