@@ -6,7 +6,7 @@ using XInputDotNetPure;
 
 public class ControllerRumble : MonoBehaviour 
 {
-
+    public bool Enabled;
     bool routineActive = false;
 
     // controller variables
@@ -23,32 +23,28 @@ public class ControllerRumble : MonoBehaviour
     {
         // Get the current gamepad states.
         state = GamePad.GetState(playerIndex);
-
-        //live updated trigger rumble
-       /* if (!routineActive && state.Triggers.Right > 0.9f)
-        {
-            StartCoroutine(TriggerShoot());
-        }*/
 	}
 
 
-    // example method for when player shoots
     public void PlayerShoot()
     {
-        StartCoroutine(TriggerShoot());
+         StartCoroutine(TriggerShoot());
     }
 
     //example of shooting rumble
     private IEnumerator TriggerShoot()
     {
-        routineActive = true;
-        SetRumble(0.5f, 1.0f);
-        yield return new WaitForSeconds(0.1f);
-        SetRumble(1.0f, 1.0f);
-        yield return new WaitForSeconds(0.1f);
-        StopRumble();
-        yield return new WaitForSeconds(1);
-        routineActive = false;
+        if (Enabled)
+        {
+            routineActive = true;
+            SetRumble(0.3f, 1.0f);
+            yield return new WaitForSeconds(0.2f);
+            //SetRumble(0.5f, 0.5f);
+            //yield return new WaitForSeconds(0.1f);
+            StopRumble();
+            yield return new WaitForSeconds(0.8f);
+            routineActive = false;
+        }
     }
 
 
@@ -60,15 +56,18 @@ public class ControllerRumble : MonoBehaviour
     // make a constant rumble for a certain duration
     private IEnumerator ConstantRumbleRoutine(float leftIntensity, float rightIntensity, float duration)
     {
-        routineActive = true;
-        float startTime = Time.time;
-        SetRumble(leftIntensity, rightIntensity);
-        while (Time.time - startTime <= duration)
+        if (Enabled)
         {
-            yield return null;
+            routineActive = true;
+            float startTime = Time.time;
+            SetRumble(leftIntensity, rightIntensity);
+            while (Time.time - startTime <= duration)
+            {
+                yield return null;
+            }
+            StopRumble();
+            routineActive = false;
         }
-        StopRumble();
-        routineActive = false;
     }
 
 
@@ -76,29 +75,32 @@ public class ControllerRumble : MonoBehaviour
     // routineDuration is the total duration, rumbleDuration how long a single rumble burst lasts, stopInterval the length of the pause between rumbles
     private IEnumerator AlternatingRumbleRoutine(float leftIntensity, float rightIntensity, float routineDuration, float rumbleDuration, float stopInterval)
     {
-        routineActive = true;
-        float startTime = Time.time;
-        float lastActivation = Time.time;
-        bool rumbleActive = true;
-        SetRumble(leftIntensity, rightIntensity);
-        // keep activating and disactivating rumble until the routine time is over
-        while (Time.time - startTime <= routineDuration)
+        if (Enabled)
         {
-            if (rumbleActive && Time.time - lastActivation >= rumbleDuration)
+            routineActive = true;
+            float startTime = Time.time;
+            float lastActivation = Time.time;
+            bool rumbleActive = true;
+            SetRumble(leftIntensity, rightIntensity);
+            // keep activating and disactivating rumble until the routine time is over
+            while (Time.time - startTime <= routineDuration)
             {
-                StopRumble();
-                rumbleActive = false;
+                if (rumbleActive && Time.time - lastActivation >= rumbleDuration)
+                {
+                    StopRumble();
+                    rumbleActive = false;
+                }
+                if (!rumbleActive && Time.time - lastActivation >= rumbleDuration + stopInterval)
+                {
+                    rumbleActive = true;
+                    StopRumble();
+                    lastActivation = Time.time;
+                }
+                yield return null;
             }
-            if (!rumbleActive && Time.time - lastActivation >= rumbleDuration + stopInterval)
-            {
-                rumbleActive = true;
-                StopRumble();
-                lastActivation = Time.time;
-            }
-            yield return null;
+            StopRumble();
+            routineActive = false;
         }
-        StopRumble();
-        routineActive = false;
     }
 
 
@@ -107,7 +109,13 @@ public class ControllerRumble : MonoBehaviour
     {      
         GamePad.SetVibration(playerIndex, leftIntensity, rightIntensity);
     }
-        
+
+
+    //prevent rumble from staying active on game quit
+    void OnApplicationQuit()
+    {
+        StopRumble();
+    }
 
     // disable vibration on a single controller
     public void StopRumble()

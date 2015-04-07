@@ -10,6 +10,8 @@ public class Shoot : MonoBehaviour {
     public Transform shotSpawn;
     public GameObject shot;
 
+    public ControllerRumble rumble;
+
     private float nextFire;
 
 	// Use this for initialization
@@ -17,6 +19,9 @@ public class Shoot : MonoBehaviour {
         speed = 2;
         fireRate = 1;
 		nextFire = Time.time + fireRate;
+
+        GameObject temp = GameObject.Find("RumbleObject");
+        rumble = (ControllerRumble)temp.GetComponent(typeof(ControllerRumble));
 	}
 	
 	// Update is called once per frame
@@ -26,10 +31,12 @@ public class Shoot : MonoBehaviour {
 			if (Time.time > nextFire) {
 				nextFire = Time.time + fireRate;
 				Instantiate(shot, shotSpawn.position, shotSpawn.rotation);
+                rumble.PlayerShoot();
 			}
 		}else if(Input.GetMouseButtonDown(0) || Input.GetKeyDown("space")) {
             nextFire = Time.time + fireRate;
             Instantiate(shot, shotSpawn.position, shotSpawn.rotation);
+            rumble.PlayerShoot();
         }
 	
 	}

@@ -7,6 +7,8 @@ using XInputDotNetPure;
 public class BeltRumble : MonoBehaviour 
 {
 
+    public bool Enabled;
+
     // controller variables
     const PlayerIndex FrontIndex = PlayerIndex.One;
     const PlayerIndex LeftIndex  = PlayerIndex.Two;
@@ -36,20 +38,24 @@ public class BeltRumble : MonoBehaviour
     // example method for when player gets hit
     public void PlayerHit(Vector3 direction, float intensity = 0.8f)
     {
-        Vector2 planeDirection = new Vector2(direction.x, direction.z);
+       Vector2 planeDirection = new Vector2(direction.x, direction.z);
+       direction.Normalize();
        StartCoroutine(ConstantRumbleRoutine(planeDirection, intensity, 0.2f));
     }
 
     // make a constant rumble for a certain duration
     private IEnumerator ConstantRumbleRoutine(Vector2 direction, float intensity, float duration)
     {
-        float startTime = Time.time;
-        SetBeltRumble(direction, intensity);
-        while (Time.time - startTime <= duration)
+        if (Enabled)
         {
-            yield return null;
+            float startTime = Time.time;
+            SetBeltRumble(direction, intensity);
+            while (Time.time - startTime <= duration)
+            {
+                yield return null;
+            }
+            StopAllRumble();
         }
-        StopAllRumble();
     }
 
 
@@ -57,27 +63,30 @@ public class BeltRumble : MonoBehaviour
     // routineDuration is the total duration, rumbleDuration how long a single rumble burst lasts, stopInterval the length of the pause between rumbles
     private IEnumerator AlternatingRumbleRoutine(Vector2 direction, float intensity, float routineDuration, float rumbleDuration, float stopInterval)
     {
-        float startTime = Time.time;
-        float lastActivation = Time.time;
-        bool rumbleActive = true;
-        SetBeltRumble(direction, intensity);
-        // keep activating and disactivating rumble until the routine time is over
-        while (Time.time - startTime <= routineDuration)
+        if (Enabled)
         {
-            if (rumbleActive && Time.time - lastActivation >= rumbleDuration)
+            float startTime = Time.time;
+            float lastActivation = Time.time;
+            bool rumbleActive = true;
+            SetBeltRumble(direction, intensity);
+            // keep activating and disactivating rumble until the routine time is over
+            while (Time.time - startTime <= routineDuration)
             {
-                StopAllRumble();
-                rumbleActive = false;
+                if (rumbleActive && Time.time - lastActivation >= rumbleDuration)
+                {
+                    StopAllRumble();
+                    rumbleActive = false;
+                }
+                if (!rumbleActive && Time.time - lastActivation >= rumbleDuration + stopInterval)
+                {
+                    rumbleActive = true;
+                    SetBeltRumble(direction, intensity);
+                    lastActivation = Time.time;
+                }
+                yield return null;
             }
-            if (!rumbleActive && Time.time - lastActivation >= rumbleDuration + stopInterval)
-            {
-                rumbleActive = true;
-                SetBeltRumble(direction, intensity);
-                lastActivation = Time.time;
-            }
-            yield return null;
+            StopAllRumble();
         }
-        StopAllRumble();
     }
 
 
@@ -151,6 +160,14 @@ public class BeltRumble : MonoBehaviour
     {
         GamePad.SetVibration(playerIndex, 0, 0);
     }
+
+
+    //prevent rumble from staying active on game quit
+    void OnApplicationQuit()
+    {
+        StopAllRumble();
+    }
+
 
     // disable virbation on all 4 controllers
     private void StopAllRumble()
