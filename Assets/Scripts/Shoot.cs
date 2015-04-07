@@ -10,7 +10,7 @@ public class Shoot : MonoBehaviour {
     public Transform shotSpawn;
     public GameObject shot;
 
-    public ControllerRumble rumble;
+    private ControllerRumble rumble;
 
     private float nextFire;
 

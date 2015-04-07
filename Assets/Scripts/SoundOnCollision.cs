@@ -3,7 +3,7 @@ using System.Collections;
 
 public class SoundOnCollision : MonoBehaviour {
 	public string bulletName;
-    BeltRumble rumble;
+    private BeltRumble rumble;
 
 	// Use this for initialization
 	void Start () {
