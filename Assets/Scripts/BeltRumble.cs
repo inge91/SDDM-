@@ -10,15 +10,13 @@ public class BeltRumble : MonoBehaviour
     public bool Enabled;
 
     // controller variables
-    const PlayerIndex FrontIndex = PlayerIndex.One;
+    const PlayerIndex FrontIndex = PlayerIndex.Three;
     const PlayerIndex LeftIndex  = PlayerIndex.Two;
     const PlayerIndex RightIndex = PlayerIndex.Four;
-    const PlayerIndex BackIndex  = PlayerIndex.Three;
+
     GamePadState FrontState;
     GamePadState LeftState;
     GamePadState RightState;
-    GamePadState BackState;
-
 
 
 	void Start () 
@@ -31,7 +29,6 @@ public class BeltRumble : MonoBehaviour
         FrontState = GamePad.GetState(FrontIndex);
         LeftState = GamePad.GetState(LeftIndex);
         RightState = GamePad.GetState(RightIndex);
-        BackState = GamePad.GetState(BackIndex);
 
 	}
 
@@ -90,17 +87,13 @@ public class BeltRumble : MonoBehaviour
     }
 
 
-    // set rumble of 4 controllers making up the belt using a direction on a unit sphere
+    // set rumble of 3 controllers making up the belt using a direction on a unit sphere
     private void SetBeltRumble(Vector2 direction, float intensity)
     {
         // clamp intensity to range [0,1]
         intensity = intensity < 0 ? 0 : (intensity > 1 ? 1 : intensity);
 
-        if (OneConnected()) //backup if only one controller is connected
-        {
-            GamePad.SetVibration(FrontIndex, intensity, intensity);
-        }
-        else // rumble the belt
+        //if (BeltConnected())
         {
             float rumbleIntensityX, rumbleIntensityY;
 
@@ -117,10 +110,10 @@ public class BeltRumble : MonoBehaviour
                     GamePad.SetVibration(FrontIndex, rumbleIntensityY, rumbleIntensityY);
                 else
                     StopRumble(FrontIndex);
-                if (direction.y < 0)
+                /*if (direction.y < 0)
                     GamePad.SetVibration(BackIndex, rumbleIntensityY, rumbleIntensityY);
                 else
-                    StopRumble(BackIndex);
+                    StopRumble(BackIndex);*/
 
                 //x coordinate determines left and right
                 if (direction.x < 0)
@@ -138,22 +131,16 @@ public class BeltRumble : MonoBehaviour
                 GamePad.SetVibration(FrontIndex, intensity, intensity);
                 GamePad.SetVibration(RightIndex, intensity, intensity);
                 GamePad.SetVibration(LeftIndex, intensity, intensity);
-                GamePad.SetVibration(BackIndex, intensity, intensity);
             }
         }
     }
 
-    //check if all 4 controllers for the belt are connected
+    //check if all 3 controllers for the belt are connected
     private bool BeltConnected()
     {
-        return FrontState.IsConnected && LeftState.IsConnected && RightState.IsConnected && BackState.IsConnected;
+        return FrontState.IsConnected && LeftState.IsConnected && RightState.IsConnected;
     }
 
-    //check if only the first controller is connected
-    private bool OneConnected()
-    {
-        return FrontState.IsConnected && !LeftState.IsConnected && !RightState.IsConnected && !BackState.IsConnected;
-    }
 
     // disable vibration on a single controller
     private void StopRumble(PlayerIndex playerIndex = FrontIndex)
@@ -175,7 +162,6 @@ public class BeltRumble : MonoBehaviour
         StopRumble(FrontIndex);
         StopRumble(LeftIndex);
         StopRumble(RightIndex);
-        StopRumble(BackIndex);
     }
 
 }
