@@ -2,31 +2,31 @@ Initialize engine version: 5.0.0f4 (5b98b70ebeb9)
 GfxDevice: creating device client; threaded=1
 Direct3D:
     Version:  Direct3D 11.0 [level 11.0]
-    Renderer: Intel(R) HD Graphics 4000 (ID=0x166)
-    Vendor:   Intel
-    VRAM:     1071 MB
+    Renderer: NVIDIA GeForce GTX 770 (ID=0x1184)
+    Vendor:   NVIDIA
+    VRAM:     1985 MB
 Begin MonoManager ReloadAssembly
-Platform assembly: C:\Users\MiloBU\Documenten\3D\SDDM-\Distance_DiscreteTest_Data\Managed\UnityEngine.dll (this message is harmless)
-Loading C:\Users\MiloBU\Documenten\3D\SDDM-\Distance_DiscreteTest_Data\Managed\UnityEngine.dll into Unity Child Domain
-Platform assembly: C:\Users\MiloBU\Documenten\3D\SDDM-\Distance_DiscreteTest_Data\Managed\Assembly-CSharp-firstpass.dll (this message is harmless)
-Loading C:\Users\MiloBU\Documenten\3D\SDDM-\Distance_DiscreteTest_Data\Managed\Assembly-CSharp-firstpass.dll into Unity Child Domain
-Platform assembly: C:\Users\MiloBU\Documenten\3D\SDDM-\Distance_DiscreteTest_Data\Managed\Assembly-CSharp.dll (this message is harmless)
-Loading C:\Users\MiloBU\Documenten\3D\SDDM-\Distance_DiscreteTest_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
-Platform assembly: C:\Users\MiloBU\Documenten\3D\SDDM-\Distance_DiscreteTest_Data\Managed\UnityEngine.UI.dll (this message is harmless)
-Loading C:\Users\MiloBU\Documenten\3D\SDDM-\Distance_DiscreteTest_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
-Platform assembly: C:\Users\MiloBU\Documenten\3D\SDDM-\Distance_DiscreteTest_Data\Managed\XInputDotNetPure.dll (this message is harmless)
-Loading C:\Users\MiloBU\Documenten\3D\SDDM-\Distance_DiscreteTest_Data\Managed\XInputDotNetPure.dll into Unity Child Domain
-Platform assembly: C:\Users\MiloBU\Documenten\3D\SDDM-\Distance_DiscreteTest_Data\Managed\XInputDotNetPure.dll (this message is harmless)
-Loading C:\Users\MiloBU\Documenten\3D\SDDM-\Distance_DiscreteTest_Data\Managed\XInputDotNetPure.dll into Unity Child Domain
-Platform assembly: C:\Users\MiloBU\Documenten\3D\SDDM-\Distance_DiscreteTest_Data\Managed\UnityEngine.UI.dll (this message is harmless)
-Loading C:\Users\MiloBU\Documenten\3D\SDDM-\Distance_DiscreteTest_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
-- Completed reload, in  0.149 seconds
+Platform assembly: D:\GitHub\SDDM-\Distance_DiscreteTest_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading D:\GitHub\SDDM-\Distance_DiscreteTest_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: D:\GitHub\SDDM-\Distance_DiscreteTest_Data\Managed\Assembly-CSharp-firstpass.dll (this message is harmless)
+Loading D:\GitHub\SDDM-\Distance_DiscreteTest_Data\Managed\Assembly-CSharp-firstpass.dll into Unity Child Domain
+Platform assembly: D:\GitHub\SDDM-\Distance_DiscreteTest_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading D:\GitHub\SDDM-\Distance_DiscreteTest_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: D:\GitHub\SDDM-\Distance_DiscreteTest_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading D:\GitHub\SDDM-\Distance_DiscreteTest_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+Platform assembly: D:\GitHub\SDDM-\Distance_DiscreteTest_Data\Managed\XInputDotNetPure.dll (this message is harmless)
+Loading D:\GitHub\SDDM-\Distance_DiscreteTest_Data\Managed\XInputDotNetPure.dll into Unity Child Domain
+Platform assembly: D:\GitHub\SDDM-\Distance_DiscreteTest_Data\Managed\XInputDotNetPure.dll (this message is harmless)
+Loading D:\GitHub\SDDM-\Distance_DiscreteTest_Data\Managed\XInputDotNetPure.dll into Unity Child Domain
+Platform assembly: D:\GitHub\SDDM-\Distance_DiscreteTest_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading D:\GitHub\SDDM-\Distance_DiscreteTest_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+- Completed reload, in  0.036 seconds
 <RI> Initializing input.
 <RI> Input initialized.
-desktop: 1366x768 60Hz; virtual: 1366x768 at 0,0
+desktop: 1680x1050 60Hz; virtual: 3360x1050 at -1680,0
 <RI> Initialized touch support.
-Platform assembly: C:\Users\MiloBU\Documenten\3D\SDDM-\Distance_DiscreteTest_Data\Managed\System.Core.dll (this message is harmless)
-Platform assembly: C:\Users\MiloBU\Documenten\3D\SDDM-\Distance_DiscreteTest_Data\Managed\System.dll (this message is harmless)
+Platform assembly: D:\GitHub\SDDM-\Distance_DiscreteTest_Data\Managed\System.Core.dll (this message is harmless)
+Platform assembly: D:\GitHub\SDDM-\Distance_DiscreteTest_Data\Managed\System.dll (this message is harmless)
 OSP: Queried SampleRate: 48000 BufferSize: 1024
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
@@ -52,5 +52,15 @@ OSP: num buffers: 4
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
 
 Setting up 2 worker threads for Enlighten.
-  Thread -> id: 2670 -> priority: 1 
-  Thread -> id: 6b8 -> priority: 1 
+  Thread -> id: 2cc0 -> priority: 1 
+  Thread -> id: 3ae8 -> priority: 1 
+DirectoryNotFoundException: Directory 'D:\GitHub\SDDM-\TestResults' not found.
+  at System.IO.Directory.GetFileSystemEntries (System.String path, System.String searchPattern, FileAttributes mask, FileAttributes attrs) [0x00000] in <filename unknown>:0 
+  at System.IO.Directory.GetFiles (System.String path, System.String searchPattern) [0x00000] in <filename unknown>:0 
+  at System.IO.DirectoryInfo.GetFiles (System.String searchPattern) [0x00000] in <filename unknown>:0 
+  at (wrapper remoting-invoke-with-check) System.IO.DirectoryInfo:GetFiles (string)
+  at AssemblyCSharp.CsvWriter..ctor (System.String filename, System.String header) [0x00000] in <filename unknown>:0 
+  at BulletSpawnerDistanceTest.Start () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+

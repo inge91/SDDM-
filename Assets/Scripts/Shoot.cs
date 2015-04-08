@@ -5,6 +5,7 @@ public class Shoot : MonoBehaviour {
 
     public float speed = 2;
 	public bool autoFire = false;
+	public bool rumbleOn = false;
 
     public float fireRate;
     public Transform shotSpawn;
@@ -16,8 +17,8 @@ public class Shoot : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        speed = 2;
-        fireRate = 1;
+        //speed = 2;
+        //fireRate = 1;
 		nextFire = Time.time + fireRate;
 
         GameObject temp = GameObject.Find("RumbleObject");
@@ -31,12 +32,17 @@ public class Shoot : MonoBehaviour {
 			if (Time.time > nextFire) {
 				nextFire = Time.time + fireRate;
 				Instantiate(shot, shotSpawn.position, shotSpawn.rotation);
-                rumble.PlayerShoot();
+				if(rumbleOn){
+					rumble.PlayerShoot();
+				}
 			}
-		}else if(Input.GetMouseButtonDown(0) || Input.GetKeyDown("space")) {
+		}else if(Input.GetMouseButtonDown(0) || Input.GetKeyDown("space") || (Input.GetButtonDown("JoystickButton0"))) {
             nextFire = Time.time + fireRate;
             Instantiate(shot, shotSpawn.position, shotSpawn.rotation);
-            rumble.PlayerShoot();
+			if(rumbleOn){
+				rumble.PlayerShoot();
+			}
+           
         }
 	
 	}

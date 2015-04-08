@@ -1,0 +1,124 @@
+Initialize engine version: 5.0.0f4 (5b98b70ebeb9)
+GfxDevice: creating device client; threaded=1
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.0]
+    Renderer: NVIDIA GeForce GTX 770 (ID=0x1184)
+    Vendor:   NVIDIA
+    VRAM:     1985 MB
+Begin MonoManager ReloadAssembly
+Platform assembly: D:\GitHub\SDDM-\Direction_Test_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading D:\GitHub\SDDM-\Direction_Test_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: D:\GitHub\SDDM-\Direction_Test_Data\Managed\Assembly-CSharp-firstpass.dll (this message is harmless)
+Loading D:\GitHub\SDDM-\Direction_Test_Data\Managed\Assembly-CSharp-firstpass.dll into Unity Child Domain
+Platform assembly: D:\GitHub\SDDM-\Direction_Test_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading D:\GitHub\SDDM-\Direction_Test_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: D:\GitHub\SDDM-\Direction_Test_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading D:\GitHub\SDDM-\Direction_Test_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+Platform assembly: D:\GitHub\SDDM-\Direction_Test_Data\Managed\XInputDotNetPure.dll (this message is harmless)
+Loading D:\GitHub\SDDM-\Direction_Test_Data\Managed\XInputDotNetPure.dll into Unity Child Domain
+Platform assembly: D:\GitHub\SDDM-\Direction_Test_Data\Managed\XInputDotNetPure.dll (this message is harmless)
+Loading D:\GitHub\SDDM-\Direction_Test_Data\Managed\XInputDotNetPure.dll into Unity Child Domain
+- Completed reload, in  0.034 seconds
+desktop: 1680x1050 60Hz; virtual: 3360x1050 at -1680,0
+<RI> Initializing input.
+<RI> Input initialized.
+<RI> Initialized touch support.
+Platform assembly: D:\GitHub\SDDM-\Direction_Test_Data\Managed\System.Core.dll (this message is harmless)
+Platform assembly: D:\GitHub\SDDM-\Direction_Test_Data\Managed\System.dll (this message is harmless)
+OSP: Queried SampleRate: 48000 BufferSize: 1024
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
+
+Setting AudioSettings.outputSampleRate is deprecated and has been replaced by audio project settings and the AudioSettings.GetConfiguration/AudioSettings.Reset API.
+ 
+(Filename:  Line: 109)
+
+SetDSPBufferSize is deprecated and has been replaced by audio project settings and the AudioSettings.GetConfiguration/AudioSettings.Reset API.
+ 
+(Filename:  Line: 133)
+
+OSP: sample rate: 48000
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
+
+OSP: buffer size: 512
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
+
+OSP: num buffers: 4
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
+
+Setting up 2 worker threads for Enlighten.
+  Thread -> id: 4858 -> priority: 1 
+  Thread -> id: 461c -> priority: 1 
+3D Ball Spawned at position (3.0, 0.0, 0.0)
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
+
+Guess processed 0 more to go
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
+
+completed with iteration
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
+
+3D Ball Spawned at position (-3.0, 0.0, 0.0)
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
+
+Guess processed 0 more to go
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
+
+completed with iteration
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
+
+3D Ball Spawned at position (0.0, 0.0, 3.0)
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
+
+Guess processed 0 more to go
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
+
+completed with iteration
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
+
+3D Ball Spawned at position (1.1, 2.8, 0.0)
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
+
+Guess processed 0 more to go
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
+
+completed with iteration
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
+
+3D Ball Spawned at position (1.1, -2.8, 0.0)
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
+
+Guess processed 0 more to go
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
+
+completed with iteration
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
+
+DirectoryNotFoundException: Directory 'D:\GitHub\SDDM-\TestResults' not found.
+  at System.IO.Directory.GetFileSystemEntries (System.String path, System.String searchPattern, FileAttributes mask, FileAttributes attrs) [0x00000] in <filename unknown>:0 
+  at System.IO.Directory.GetFiles (System.String path, System.String searchPattern) [0x00000] in <filename unknown>:0 
+  at System.IO.DirectoryInfo.GetFiles (System.String searchPattern) [0x00000] in <filename unknown>:0 
+  at (wrapper remoting-invoke-with-check) System.IO.DirectoryInfo:GetFiles (string)
+  at AssemblyCSharp.CsvWriter..ctor (System.String filename, System.String header) [0x00000] in <filename unknown>:0 
+  at BulletSpawnerDirectionTest.Start () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
