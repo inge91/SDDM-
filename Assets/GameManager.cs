@@ -37,6 +37,10 @@ public class GameManager : MonoBehaviour {
 		if(Input.GetButtonDown("SpawnSecTurret")){
 			secondTurretParent.SetActive(true);
 		}
+		if(Input.GetButtonDown("SwitchLevel")){
+			Application.LoadLevel(1);
+		}
+
 
 		if(health == 0){
 			gameOver.SetActive(true);

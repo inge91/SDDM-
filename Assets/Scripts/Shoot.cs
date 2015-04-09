@@ -9,6 +9,7 @@ public class Shoot : MonoBehaviour {
 	public bool rumbleOn = false;
 
 	public bool useChargingSound = false;
+	public AudioClip overrideBulletSound;
 
     //public AudioClip chargingSound;
 
@@ -61,14 +62,15 @@ public class Shoot : MonoBehaviour {
 			}else{
 				if (Time.time > nextFire) {
 					nextFire = Time.time + fireRate;
-					
+
+					shot.GetComponent<AudioSource>().clip = overrideBulletSound;
 					Instantiate(shot, shotSpawn.position, shotSpawn.rotation);
 					if(rumbleOn){
 						rumble.PlayerShoot();
 					}
 				}
 			}
-		}else if(Input.GetMouseButtonDown(0) || (Input.GetButtonDown("JoystickButton0"))) {
+		}else if(Input.GetMouseButtonDown(0) || (Input.GetButtonDown("JoystickButton0")) || (Input.GetAxis("Right Trigger") == 1)) {
 			if(Time.time > cooldownDone){
 				cooldownDone = Time.time + cooldown;
 				//nextFire = Time.time + fireRate;
