@@ -6,7 +6,7 @@ public class ToggleCameras : MonoBehaviour {
 	public Camera RightEyeAnchor;
 	public GameObject blackPlane;
 
-	private bool CamerasOn = true;
+	private bool CamerasOn = false;
 
 
 	// Use this for initialization
@@ -20,11 +20,15 @@ public class ToggleCameras : MonoBehaviour {
 			blackPlane.gameObject.SetActive(true);
 			//LeftEyeAnchor.gameObject.SetActive(false);
 			//RightEyeAnchor.gameObject.SetActive(false);
+			LeftEyeAnchor.nearClipPlane = 100;
+			RightEyeAnchor.nearClipPlane = 100;
 			CamerasOn = false;
 		}else if(Input.GetButtonDown ("CameraToggle")){
 			blackPlane.gameObject.SetActive(false);
 			//LeftEyeAnchor.gameObject.SetActive(true);
 			//RightEyeAnchor.gameObject.SetActive(true);
+			LeftEyeAnchor.nearClipPlane = 0.1f;
+			RightEyeAnchor.nearClipPlane = 0.1f;
 			CamerasOn = true;
 		}
 	}

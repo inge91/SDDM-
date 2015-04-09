@@ -6,6 +6,7 @@ public class DestoryTurret : MonoBehaviour {
 	public float respawnTime = 3f;
 	public GameObject turret;
 	public GameObject turretParent;
+	public GameObject sceneManager;
 
 	private float nextTurret = 0;
 
@@ -35,6 +36,9 @@ public class DestoryTurret : MonoBehaviour {
 			//Move the turret to a new random position
 
 			turretParent.gameObject.transform.rotation = Quaternion.Euler(0, Random.Range(-90.0f, 90.0f), 0);
+
+			//add one to the score
+			sceneManager.GetComponent<GameManager>().score += 1;
 		}
 		
 	}

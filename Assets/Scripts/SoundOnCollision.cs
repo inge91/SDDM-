@@ -4,6 +4,8 @@ using System.Collections;
 public class SoundOnCollision : MonoBehaviour {
 	public string bulletName;
     private BeltRumble rumble;
+	public bool isPlayerObject = false; //set this to true if the script is attached to the player
+	public GameObject sceneManager;
 
 	// Use this for initialization
 	void Start () {
@@ -22,6 +24,9 @@ public class SoundOnCollision : MonoBehaviour {
 
 			this.GetComponent<AudioSource>().Play();
 			Destroy(collider.gameObject);
+
+			//remove one health from the player
+			sceneManager.GetComponent<GameManager>().health -= 1;
 		}
 
 	}

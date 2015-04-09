@@ -4,12 +4,13 @@ using System.Collections;
 public class Shoot : MonoBehaviour {
 
     public float speed = 2;
+	public float cooldown = 3;
 	public bool autoFire = false;
 	public bool rumbleOn = false;
 
-    public bool useChargingSound;
+	public bool useChargingSound = false;
 
-    public AudioClip chargingSound;
+    //public AudioClip chargingSound;
 
     public float fireRate;
     public Transform shotSpawn;
@@ -20,6 +21,7 @@ public class Shoot : MonoBehaviour {
     private float nextFire;
     private float chargeTime;
     private float nextCharge;
+	private float cooldownDone = 0;
 
 	// Use this for initialization
 	void Start () {
@@ -27,15 +29,13 @@ public class Shoot : MonoBehaviour {
         //fireRate = 1;
 
         nextFire = Time.time + fireRate;
-        if (chargingSound != null)
-        {
-            chargeTime = chargingSound.length;
-            nextFire = nextFire + chargeTime;
-        }
 
-        nextCharge = Time.time + fireRate;
-
-
+		if(useChargingSound){
+			chargeTime = this.gameObject.GetComponent<AudioSource>().clip.length;
+			nextFire = Time.time + fireRate + chargeTime*0.8f;
+			nextCharge = Time.time + fireRate;
+		}
+		
         GameObject temp = GameObject.Find("RumbleObject");
         rumble = (ControllerRumble)temp.GetComponent(typeof(ControllerRumble));
 	}
@@ -46,22 +46,38 @@ public class Shoot : MonoBehaviour {
             if (useChargingSound && Time.time > nextCharge)
             {
                 
-                AudioSource.PlayClipAtPoint(chargingSound, this.transform.position);
+                //AudioSource.PlayClipAtPoint(chargingSound, this.transform.position);
+				this.gameObject.GetComponent<AudioSource>().Play();
                 nextCharge = Time.time + fireRate;
-            }
+            
 			if (Time.time > nextFire) {
-				nextFire = Time.time + fireRate;
+				nextFire = nextCharge + chargeTime*0.8f;
+
 				Instantiate(shot, shotSpawn.position, shotSpawn.rotation);
 				if(rumbleOn){
 					rumble.PlayerShoot();
 				}
 			}
-		}else if(Input.GetMouseButtonDown(0) || Input.GetKeyDown("space") || (Input.GetButtonDown("JoystickButton0"))) {
-            nextFire = Time.time + fireRate;
-            Instantiate(shot, shotSpawn.position, shotSpawn.rotation);
-			if(rumbleOn){
-				rumble.PlayerShoot();
+			}else{
+				if (Time.time > nextFire) {
+					nextFire = Time.time + fireRate;
+					
+					Instantiate(shot, shotSpawn.position, shotSpawn.rotation);
+					if(rumbleOn){
+						rumble.PlayerShoot();
+					}
+				}
 			}
+		}else if(Input.GetMouseButtonDown(0) || (Input.GetButtonDown("JoystickButton0"))) {
+			if(Time.time > cooldownDone){
+				cooldownDone = Time.time + cooldown;
+				//nextFire = Time.time + fireRate;
+				Instantiate(shot, shotSpawn.position, shotSpawn.rotation);
+				if(rumbleOn){
+					rumble.PlayerShoot();
+				}
+			}
+
            
         }
 	
